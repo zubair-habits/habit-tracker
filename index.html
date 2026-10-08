@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!--
+    Content Security Policy (CLAUDE.md section 8).
+    Everything loads only from this app; no connections to other websites.
+    'unsafe-inline' styles and data: fonts/images are allowed only because the
+    Eruda debug console needs them. None of these can run code or send data out.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="theme-color" content="#2e7d5b">
+  <meta name="color-scheme" content="light dark">
+  <title>Habit Tracker</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <button id="update-banner" class="update-banner" type="button" hidden>
+    Update available, tap to reload
+  </button>
+
+  <header class="app-header">
+    <h1>Habit Tracker</h1>
+  </header>
+
+  <main class="app-main">
+    <section class="card">
+      <h2>Test counter</h2>
+      <p class="counter-value" id="counter-value">…</p>
+      <button id="counter-button" class="primary" type="button">Tap to add 1</button>
+    </section>
+
+    <section class="card">
+      <h2>About</h2>
+      <dl class="about">
+        <dt>App version</dt>
+        <dd id="about-version">…</dd>
+        <dt>Counter value</dt>
+        <dd id="about-counter">…</dd>
+      </dl>
+    </section>
+  </main>
+</body>
+</html>

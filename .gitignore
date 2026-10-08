@@ -1,0 +1,11 @@
+# Personal data: never commit backups or exports (CLAUDE.md section 8)
+habit-backup-*.json
+*.csv
+*.pdf
+backups/
+exports/
+
+# Editor and system files
+.vscode/
+Thumbs.db
+desktop.ini
