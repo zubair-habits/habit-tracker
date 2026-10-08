@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Planning and setup complete. All design decisions settled. Module 0 not started.
+- **Phase:** Module 0 complete, next is Module 1.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
   - GitHub email privacy on: "Keep my email addresses private" and "Block command line pushes that expose my email".
@@ -20,9 +20,17 @@ Update the **Status** section at the end of every session.
   - Public repository `habit-tracker` (all lowercase, confirmed) created inside `zubair-habits`, with a README.
   - Repository cloned directly into `C:\Users\zzuba\mera wala\app_3`.
   - Claude Code terminal tool installed (v2.1.294, `C:\Users\zzuba\.local\bin`), added to PATH, and started in `app_3`.
-- **Still to do before Module 0:** make sure this file is in `app_3` (copy it in if not).
+  - **Module 0 (2026-10-08):** scaffold, manifest, service worker, update banner, CSP, Dexie 4.0.11 and Eruda 3.4.1 in `vendor/`, IndexedDB test counter, About panel. GitHub Pages live from `main`, root. App installed on the phone; phone update test passed (0.1.1 → 0.1.2, counter unchanged at 5).
+- **Current version:** `0.1.2`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 0, using `module-0-prompt.md`.
+- **Next:** Module 1.
+
+### Notes from Module 0
+- **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
+- **Icons:** white bold "12" on black, generated locally with a PowerShell `System.Drawing` script. Theme colour is still green `#2e7d5b` (owner may change it to black later; safe to change).
+- **New app files** must be added to `APP_FILES` in `sw.js`, or they will not work offline.
+- **Local testing:** Live Server's injected inline script is blocked by the CSP. This error is expected and harmless; the page does not auto-reload.
+- **Push and downloads:** Claude Code cannot sign in to GitHub or download vendor files itself. The owner runs these by typing `!` before the command in Claude Code. The `!` prompt runs **Git Bash**, so commands must use Bash syntax, not PowerShell.
 
 ---
 
