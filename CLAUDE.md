@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 0 complete, next is Module 1.
+- **Phase:** Module 1 complete (2026-11-05), next is Module 2.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
   - GitHub email privacy on: "Keep my email addresses private" and "Block command line pushes that expose my email".
@@ -21,10 +21,11 @@ Update the **Status** section at the end of every session.
   - Repository cloned directly into `C:\Users\zzuba\mera wala\app_3`.
   - Claude Code terminal tool installed (v2.1.294, `C:\Users\zzuba\.local\bin`), added to PATH, and started in `app_3`.
   - **Module 0 (2026-10-08):** scaffold, manifest, service worker, update banner, CSP, Dexie 4.0.11 and Eruda 3.4.1 in `vendor/`, IndexedDB test counter, About panel. GitHub Pages live from `main`, root. App installed on the phone; phone update test passed (0.1.1 → 0.1.2, counter unchanged at 5).
-- **Current version:** `0.1.2`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 1 (2026-11-05):** Dexie version 2 (`habits`, `completions`, `settings`; `testCounter` removed by migration), `schemaVersion` row, persistent storage request, `js/dates.js`, `isScheduled` in `js/schedule.js` (25 / 25 test cases pass), top-corner menu with Main, Settings, Analysis and Export views and back-button history, theme (System, Light, Dark), extended About panel. Built in a cloud session; merged through pull requests #1 (0.2.0) and #2 (0.2.1). Phone part 1 passed (counter gone; 0.2.0, schema 2, persistent storage Granted, counts 0 / 0 / 1, then settings 2 after choosing Dark). Phone part 2 passed (0.2.1, Theme still Dark, settings still 2).
+- **Current version:** `0.2.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 1. Its full spec is `docs/modules/module-1.md`. Start it with the first-session message in `docs/HOW-TO-USE-CLAUDE-CODE.md`; from Module 2 on, use `/build-module N`.
+- **Next:** Module 2 (habit management). Its spec `docs/modules/module-2.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 2`.
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -32,6 +33,17 @@ Update the **Status** section at the end of every session.
 - **New app files** must be added to `APP_FILES` in `sw.js`, or they will not work offline.
 - **Local testing:** Live Server's injected inline script is blocked by the CSP. This error is expected and harmless; the page does not auto-reload.
 - **Push and downloads:** Claude Code cannot sign in to GitHub or download vendor files itself. The owner runs these by typing `!` before the command in Claude Code. The `!` prompt runs **Git Bash**, so commands must use Bash syntax, not PowerShell.
+
+### Notes from Module 1
+- **Cloud session instead of Local:** steps 1 to 9 were done in a cloud session. The owner's Live Server (step 6) and DevTools (step 9) checks were replaced by automated checks with Playwright and headless Chromium against a local web server: 21 checks (test page, IndexedDB tables and `schemaVersion`, offline including `#settings`, back button, theme survives reload) plus simulated upgrades 0.1.2 → 0.2.0 (counter 5 → `testCounter` removed) and 0.2.0 → 0.2.1 (Dark and settings 2 kept). The owner did the phone tests and merged on the GitHub website. Claude pushed only its session branch and never pushed to or merged into `main`.
+- **Tests run in Node too:** `node tests/schedule.test.js` (run with `TZ=Asia/Kolkata` and `TZ=UTC`). The test page has its own `tests/tests.css`, which the spec did not list.
+- **Back button:** moving from one non-Main view to another replaces the history entry, so one back press always returns to Main. Opening the app at `#settings` puts Main underneath it. A history entry without a saved view (address changed by hand) shows the view named after `#`. This last rule was added after the automated checks found the gap.
+- **Theme colours:** dark-mode header `#1d4a37`, dark accent `#4fb386`. The `theme-color` meta reads `--header` from the CSS, so the phone's status bar always matches the header.
+- **Update without the banner (known, unchanged since Module 0):** if a new version finishes downloading while the app is open and the app is then fully closed without tapping the banner, Chrome switches to the new version on the next open without a banner. Data is safe either way (migrations run on open). No change made.
+- **Update timing:** the app checks for an update only when it opens and when it comes back to the screen. GitHub Pages publishes about 30 seconds after a merge. If the banner does not appear, switch away from the app and back, or close it fully and reopen it.
+- **Unverified commits:** commits use the no-reply email without a signature, so GitHub labels them Unverified. The owner accepted this; commits are never re-authored to another email.
+- **Laptop updates:** the Claude desktop app has no Terminal pane in cloud sessions. After each merge, update the laptop from the VS Code terminal or PowerShell in `app_3` with `git checkout main`, then `git pull origin main`.
+- **Backup before data deploys:** not possible before Module 4 (no backup feature yet). Acceptable in Module 1 because the phone held only the test counter.
 
 ---
 
