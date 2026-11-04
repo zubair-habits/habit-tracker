@@ -15,6 +15,7 @@
   <title>Habit Tracker</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <script src="./js/theme-boot.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.js"></script>
 </head>
@@ -24,24 +25,67 @@
   </button>
 
   <header class="app-header">
-    <h1>Habit Tracker</h1>
+    <button id="home-button" class="home-button" type="button">Habit Tracker</button>
+    <button id="menu-button" class="menu-button" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="menu" class="menu" hidden>
+      <button type="button" data-go="settings">Settings</button>
+      <button type="button" data-go="analysis">Analysis</button>
+      <button type="button" data-go="export">Export</button>
+    </nav>
   </header>
 
   <main class="app-main">
-    <section class="card">
-      <h2>Test counter</h2>
-      <p class="counter-value" id="counter-value">…</p>
-      <button id="counter-button" class="primary" type="button">Tap to add 1</button>
+    <section data-view="main">
+      <div class="card">
+        <h2>Calendar</h2>
+        <p class="placeholder">Calendar comes in Module 3</p>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>About</h2>
-      <dl class="about">
-        <dt>App version</dt>
-        <dd id="about-version">…</dd>
-        <dt>Counter value</dt>
-        <dd id="about-counter">…</dd>
-      </dl>
+    <section data-view="settings" hidden>
+      <div class="card">
+        <h2>Theme</h2>
+        <fieldset class="choice">
+          <legend class="visually-hidden">Theme</legend>
+          <label><input type="radio" name="theme" value="system"> System</label>
+          <label><input type="radio" name="theme" value="light"> Light</label>
+          <label><input type="radio" name="theme" value="dark"> Dark</label>
+        </fieldset>
+      </div>
+
+      <div class="card">
+        <h2>About</h2>
+        <dl class="about">
+          <dt>App version</dt>
+          <dd id="about-version">…</dd>
+          <dt>Schema version</dt>
+          <dd id="about-schema">…</dd>
+          <dt>Persistent storage</dt>
+          <dd id="about-persist">…</dd>
+          <dt>Habits</dt>
+          <dd id="about-habits">…</dd>
+          <dt>Completions</dt>
+          <dd id="about-completions">…</dd>
+          <dt>Settings</dt>
+          <dd id="about-settings">…</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-view="analysis" hidden>
+      <div class="card">
+        <h2>Analysis</h2>
+        <p class="placeholder">Coming in Module 5</p>
+      </div>
+    </section>
+
+    <section data-view="export" hidden>
+      <div class="card">
+        <h2>Export</h2>
+        <p class="placeholder">Coming in Module 4</p>
+      </div>
     </section>
   </main>
 </body>

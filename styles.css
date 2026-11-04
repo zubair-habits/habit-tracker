@@ -1,19 +1,38 @@
+/* Theme (CLAUDE.md section 4). Light colours on :root; dark colours when
+   data-theme="dark", or when the phone is dark and the choice is System
+   (no data-theme attribute). --header is also copied to the theme-color meta. */
 :root {
   --brand: #2e7d5b;
+  --header: #2e7d5b;
   --bg: #f5f6f5;
   --card: #ffffff;
   --text: #1c1f1d;
   --muted: #5d6661;
   --border: #dde2de;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --brand: #4fb386;
+  --header: #1d4a37;
+  --bg: #121513;
+  --card: #1c211e;
+  --text: #e8ece9;
+  --muted: #a0aaa4;
+  --border: #2e3631;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    --brand: #4fb386;
+    --header: #1d4a37;
     --bg: #121513;
     --card: #1c211e;
     --text: #e8ece9;
     --muted: #a0aaa4;
     --border: #2e3631;
+    color-scheme: dark;
   }
 }
 
@@ -30,15 +49,87 @@ body {
 }
 
 .app-header {
-  background: var(--brand);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--header);
   color: #fff;
-  padding: 16px;
-  padding-top: calc(16px + env(safe-area-inset-top));
+  padding: 8px 8px 8px 16px;
+  padding-top: calc(8px + env(safe-area-inset-top));
 }
 
-.app-header h1 {
-  margin: 0;
+.home-button {
+  border: 0;
+  background: none;
+  color: inherit;
+  padding: 8px 0;
   font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.menu-button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.menu-button span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  background: #fff;
+}
+
+.menu-button:active,
+.menu-button[aria-expanded="true"] {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 8px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.menu[hidden] {
+  display: none;
+}
+
+.menu button {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  color: var(--text);
+  text-align: left;
+}
+
+.menu button:active {
+  background: var(--border);
+}
+
+.menu button[aria-current="page"] {
+  font-weight: 700;
+  color: var(--brand);
 }
 
 .app-main {
@@ -56,17 +147,24 @@ body {
   padding: 16px;
 }
 
+.app-main > section {
+  display: grid;
+  gap: 16px;
+}
+
+.app-main > section[hidden] {
+  display: none;
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--muted);
+}
+
 .card h2 {
   margin: 0 0 8px;
   font-size: 1rem;
   color: var(--muted);
-}
-
-.counter-value {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 8px 0 16px;
-  text-align: center;
 }
 
 button {
@@ -121,4 +219,35 @@ button.primary:active {
 
 .update-banner[hidden] {
   display: none;
+}
+
+.choice {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.choice input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

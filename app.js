@@ -1,5 +1,8 @@
-import Dexie from './vendor/dexie.mjs';
-import { APP_VERSION } from './version.js';
+// Entry file: starts the database, the views, the theme, and the service worker.
+import { openDb } from './js/db.js';
+import { initViews, onViewShown } from './js/views.js';
+import { initTheme } from './js/theme.js';
+import { refreshAbout } from './js/about.js';
 
 // On-screen debug console, only when the address ends in ?debug=1.
 if (location.search === '?debug=1') {
@@ -7,34 +10,6 @@ if (location.search === '?debug=1') {
   script.src = './vendor/eruda.js';
   script.onload = () => window.eruda.init();
   document.head.appendChild(script);
-}
-
-// Database. Schema changes only ever happen by adding a new db.version()
-// with a migration (CLAUDE.md section 6). The test counter table is removed
-// by a migration in Module 1.
-const db = new Dexie('habit-tracker');
-db.version(1).stores({
-  testCounter: 'id',
-});
-
-const COUNTER_ID = 'counter';
-
-async function readCounter() {
-  const row = await db.testCounter.get(COUNTER_ID);
-  return row ? row.value : 0;
-}
-
-async function incrementCounter() {
-  return db.transaction('rw', db.testCounter, async () => {
-    const value = (await readCounter()) + 1;
-    await db.testCounter.put({ id: COUNTER_ID, value });
-    return value;
-  });
-}
-
-function showCounter(value) {
-  document.getElementById('counter-value').textContent = value;
-  document.getElementById('about-counter').textContent = value;
 }
 
 // Service worker and update banner (CLAUDE.md section 6).
@@ -83,8 +58,15 @@ async function registerServiceWorker() {
 
 registerServiceWorker().catch((err) => console.error('Service worker registration failed:', err));
 
-document.getElementById('about-version').textContent = APP_VERSION;
-document.getElementById('counter-button').addEventListener('click', async () => {
-  showCounter(await incrementCounter());
-});
-showCounter(await readCounter());
+initViews();
+
+try {
+  await openDb();
+  await initTheme(refreshAbout);
+  await refreshAbout();
+  onViewShown((view) => {
+    if (view === 'settings') refreshAbout().catch((err) => console.error(err));
+  });
+} catch (err) {
+  console.error('Database failed to open:', err);
+}
