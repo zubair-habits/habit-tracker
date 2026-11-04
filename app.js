@@ -1,7 +1,8 @@
-// Entry file: starts the database, the views, and the service worker.
-import { APP_VERSION } from './version.js';
+// Entry file: starts the database, the views, the theme, and the service worker.
 import { openDb } from './js/db.js';
-import { initViews } from './js/views.js';
+import { initViews, onViewShown } from './js/views.js';
+import { initTheme } from './js/theme.js';
+import { refreshAbout } from './js/about.js';
 
 // On-screen debug console, only when the address ends in ?debug=1.
 if (location.search === '?debug=1') {
@@ -58,10 +59,14 @@ async function registerServiceWorker() {
 registerServiceWorker().catch((err) => console.error('Service worker registration failed:', err));
 
 initViews();
-document.getElementById('about-version').textContent = APP_VERSION;
 
 try {
   await openDb();
+  await initTheme(refreshAbout);
+  await refreshAbout();
+  onViewShown((view) => {
+    if (view === 'settings') refreshAbout().catch((err) => console.error(err));
+  });
 } catch (err) {
   console.error('Database failed to open:', err);
 }

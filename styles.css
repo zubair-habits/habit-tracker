@@ -1,19 +1,38 @@
+/* Theme (CLAUDE.md section 4). Light colours on :root; dark colours when
+   data-theme="dark", or when the phone is dark and the choice is System
+   (no data-theme attribute). --header is also copied to the theme-color meta. */
 :root {
   --brand: #2e7d5b;
+  --header: #2e7d5b;
   --bg: #f5f6f5;
   --card: #ffffff;
   --text: #1c1f1d;
   --muted: #5d6661;
   --border: #dde2de;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --brand: #4fb386;
+  --header: #1d4a37;
+  --bg: #121513;
+  --card: #1c211e;
+  --text: #e8ece9;
+  --muted: #a0aaa4;
+  --border: #2e3631;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    --brand: #4fb386;
+    --header: #1d4a37;
     --bg: #121513;
     --card: #1c211e;
     --text: #e8ece9;
     --muted: #a0aaa4;
     --border: #2e3631;
+    color-scheme: dark;
   }
 }
 
@@ -36,7 +55,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--brand);
+  background: var(--header);
   color: #fff;
   padding: 8px 8px 8px 16px;
   padding-top: calc(8px + env(safe-area-inset-top));
@@ -200,4 +219,35 @@ button.primary:active {
 
 .update-banner[hidden] {
   display: none;
+}
+
+.choice {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.choice input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

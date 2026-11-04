@@ -15,6 +15,7 @@
   <title>Habit Tracker</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <script src="./js/theme-boot.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.js"></script>
 </head>
@@ -45,10 +46,30 @@
 
     <section data-view="settings" hidden>
       <div class="card">
+        <h2>Theme</h2>
+        <fieldset class="choice">
+          <legend class="visually-hidden">Theme</legend>
+          <label><input type="radio" name="theme" value="system"> System</label>
+          <label><input type="radio" name="theme" value="light"> Light</label>
+          <label><input type="radio" name="theme" value="dark"> Dark</label>
+        </fieldset>
+      </div>
+
+      <div class="card">
         <h2>About</h2>
         <dl class="about">
           <dt>App version</dt>
           <dd id="about-version">…</dd>
+          <dt>Schema version</dt>
+          <dd id="about-schema">…</dd>
+          <dt>Persistent storage</dt>
+          <dd id="about-persist">…</dd>
+          <dt>Habits</dt>
+          <dd id="about-habits">…</dd>
+          <dt>Completions</dt>
+          <dd id="about-completions">…</dd>
+          <dt>Settings</dt>
+          <dd id="about-settings">…</dd>
         </dl>
       </div>
     </section>
