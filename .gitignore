@@ -9,3 +9,6 @@ exports/
 .vscode/
 Thumbs.db
 desktop.ini
+
+# Claude Code personal permission settings (never commit)
+.claude/settings.local.json

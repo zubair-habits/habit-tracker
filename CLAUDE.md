@@ -24,7 +24,7 @@ Update the **Status** section at the end of every session.
 - **Current version:** `0.1.2`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 1.
+- **Next:** Module 1. Its full spec is `docs/modules/module-1.md`. Start it with the first-session message in `docs/HOW-TO-USE-CLAUDE-CODE.md`; from Module 2 on, use `/build-module N`.
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -51,7 +51,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 - **Devices:** Windows 11 laptop (development; only a C: drive), one Android phone with Chrome (daily use). No iOS. No second device.
 - **Project folder on the laptop:** `C:\Users\zzuba\mera wala\app_3`. The repository is cloned directly into this folder (no subfolder). Any file for this project saved on the laptop goes here. The path contains a space, so it must be wrapped in quotes in PowerShell.
 - **Tools installed:** Git for Windows, VS Code, Claude Code terminal tool (run `claude` from inside `app_3`), Claude desktop app (its Code tab is an alternative to the terminal).
-- **Model:** Opus 5.5 by default. Switch to Fable 5.1 (`/model`) only if Opus fails on the same bug after two or three attempts, most likely in Module 6.
+- **Model:** Fable 5.1 or Opus 5.5, chosen with `/model` at the start of each session. The cost rule above decides: if the Fable row in the `/model` picker says **"Requires usage credits"**, Fable would cost extra money, so use Opus. Never accept a usage-credits prompt.
 - **Schedule:** built in free time, no deadline. One module per session; each session must end with nothing half-finished.
 
 ---
@@ -242,6 +242,26 @@ Updates and backups are linked: updates must not touch data, and backups are the
 ### Settings and records
 - A key-value table holds: schema version, theme choice, last backup time.
 
+### Storage format (fixed in Module 1; every later module must use it exactly)
+Database name `habit-tracker`. Dexie version 1 = Module 0 test counter. Dexie version 2 = the tables below, with `testCounter` removed.
+
+| Table | Primary key and indexes | Row shape |
+|---|---|---|
+| `habits` | `id`; index `status` | `{ id, name, colour, status, createdAt, activePeriods, schedule }` |
+| `completions` | compound `[habitId+date]`; indexes `habitId`, `date` | `{ habitId, date, setTime, completedAt, deviationMin, late, extra }` |
+| `settings` | `key` | `{ key, value }` |
+
+Field rules:
+- `id`: `crypto.randomUUID()`, set once, never changed.
+- `colour`: `"#rrggbb"`. `status`: `"active"` or `"discontinued"`. `createdAt` and `completedAt`: milliseconds since 1970 (a number, so there is no time-zone ambiguity).
+- `activePeriods`: list of `{ start, end }`. `end` is `null` while active and **inclusive** (the last day that counts).
+- `schedule`: **append-only** list of `{ from, repeat, days, date, setTime }`. `days` uses ISO weekday numbers, Monday = 1 … Sunday = 7. `date` is `null` for repeating habits. If two versions share the same `from`, the one later in the list wins.
+- All calendar dates are local `"YYYY-MM-DD"` strings; all set times are `"HH:MM"` (24-hour).
+- `deviationMin`: whole minutes, completion time minus intended date-and-time; **positive = late, negative = early**.
+- Settings keys: `schemaVersion` (number), `theme` (`"system"`, `"light"` or `"dark"`), `lastBackupAt` (milliseconds or `null`).
+- **Never** use `toISOString()` or `new Date("YYYY-MM-DD")` for calendar dates. India is UTC+5:30, so both give the wrong day around midnight. Use the helpers in `js/dates.js`.
+- "Is habit H scheduled on date D?" is answered only by `isScheduled(habit, date)` in `js/schedule.js`. No other code may re-implement that rule.
+
 ### Decisions settled
 1. Schedule: weekday picker with weekly repeat, or a one-time date.
 2. One set time per habit.
@@ -345,3 +365,29 @@ One module per Claude Code session. Each module ends with a commit, a deploy, th
 - If anything here is unclear or seems wrong, ask rather than guess.
 - Use British English.
 - At the end of each session: update the Status section, commit, and state the next module.
+- Each module has a full spec in `docs/modules/module-N.md`. Follow its steps in order. If the spec and this file disagree, stop and ask; do not guess. If the spec for a module does not exist yet, stop: specs are written in the claude.ai planning chat, not invented in Claude Code.
+- **Pushing (Local sessions):** never push yourself. When a push is due, ask the owner to push. The owner works in the **Claude desktop app** (Code tab, Local environment, folder `app_3`): there they type `git push` in the Terminal pane (Ctrl+`). In the terminal version of Claude Code it is `! git push` (Git Bash syntax). Wherever a module spec says `! git push`, give the Desktop form. Downloads work the same way.
+- **Session setup (Desktop app):** normally environment **Local**, folder `app_3`, permission mode **Manual**.
+- **Cloud sessions** (environment such as `P1`, working from the GitHub copy of the repository) are allowed **only for writing code and running automated tests**. In a cloud session:
+  - Before the first commit, run `git config user.name "Zbr-ansr"` and `git config user.email "145891905+Zbr-ansr@users.noreply.github.com"`.
+  - Commit to the session's own branch, push only that branch, and open a pull request into `main`. **Never push to `main` or merge anything**: merging deploys to the phone, so the owner merges after the local tests.
+  - Steps that need Live Server, Chrome DevTools or the phone are done later in a Local session, after checking out that branch.
+- **Running out of usage mid-module:** stop at the end of a step, commit locally, and **do not push** (pushing to `main` deploys to the phone). Record in Status "Module N in progress: steps 1 to X done, not pushed".
+- Do not use Auto, Accept edits or Bypass permissions modes in this project; Manual only.
+
+---
+
+## 15. Repository layout
+
+| Path | Purpose |
+|---|---|
+| `index.html`, `app.js`, `styles.css`, `version.js` | App page, entry script, styles, the one version number |
+| `sw.js` | Service worker. Stays at the root so its scope covers the whole app. Every app file must be listed in `APP_FILES` |
+| `manifest.webmanifest`, `icons/` | Install details. Never change `id`, `start_url` or `scope` |
+| `js/` | App modules from Module 1 on (`dates.js`, `db.js`, `schedule.js`, views) |
+| `vendor/` | Third-party libraries saved locally (Dexie, Eruda; Chart.js and jsPDF later) |
+| `tests/` | Browser test pages opened with Live Server. Not cached by the service worker |
+| `docs/modules/` | One spec per module, written before that module starts |
+| `docs/HOW-TO-USE-CLAUDE-CODE.md` | Beginner guide for the owner |
+| `.claude/skills/build-module/SKILL.md` | The `/build-module N` command (created in Module 1 step 1 from `docs/setup/build-module-SKILL.md`; edit both together) |
+| `CLAUDE.md` | This file |
