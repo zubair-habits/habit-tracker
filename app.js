@@ -1,5 +1,7 @@
-import Dexie from './vendor/dexie.mjs';
+// Entry file: starts the database, the views, and the service worker.
 import { APP_VERSION } from './version.js';
+import { openDb } from './js/db.js';
+import { initViews } from './js/views.js';
 
 // On-screen debug console, only when the address ends in ?debug=1.
 if (location.search === '?debug=1') {
@@ -7,34 +9,6 @@ if (location.search === '?debug=1') {
   script.src = './vendor/eruda.js';
   script.onload = () => window.eruda.init();
   document.head.appendChild(script);
-}
-
-// Database. Schema changes only ever happen by adding a new db.version()
-// with a migration (CLAUDE.md section 6). The test counter table is removed
-// by a migration in Module 1.
-const db = new Dexie('habit-tracker');
-db.version(1).stores({
-  testCounter: 'id',
-});
-
-const COUNTER_ID = 'counter';
-
-async function readCounter() {
-  const row = await db.testCounter.get(COUNTER_ID);
-  return row ? row.value : 0;
-}
-
-async function incrementCounter() {
-  return db.transaction('rw', db.testCounter, async () => {
-    const value = (await readCounter()) + 1;
-    await db.testCounter.put({ id: COUNTER_ID, value });
-    return value;
-  });
-}
-
-function showCounter(value) {
-  document.getElementById('counter-value').textContent = value;
-  document.getElementById('about-counter').textContent = value;
 }
 
 // Service worker and update banner (CLAUDE.md section 6).
@@ -83,8 +57,11 @@ async function registerServiceWorker() {
 
 registerServiceWorker().catch((err) => console.error('Service worker registration failed:', err));
 
+initViews();
 document.getElementById('about-version').textContent = APP_VERSION;
-document.getElementById('counter-button').addEventListener('click', async () => {
-  showCounter(await incrementCounter());
-});
-showCounter(await readCounter());
+
+try {
+  await openDb();
+} catch (err) {
+  console.error('Database failed to open:', err);
+}

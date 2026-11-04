@@ -24,24 +24,47 @@
   </button>
 
   <header class="app-header">
-    <h1>Habit Tracker</h1>
+    <button id="home-button" class="home-button" type="button">Habit Tracker</button>
+    <button id="menu-button" class="menu-button" type="button" aria-label="Menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="menu" class="menu" hidden>
+      <button type="button" data-go="settings">Settings</button>
+      <button type="button" data-go="analysis">Analysis</button>
+      <button type="button" data-go="export">Export</button>
+    </nav>
   </header>
 
   <main class="app-main">
-    <section class="card">
-      <h2>Test counter</h2>
-      <p class="counter-value" id="counter-value">…</p>
-      <button id="counter-button" class="primary" type="button">Tap to add 1</button>
+    <section data-view="main">
+      <div class="card">
+        <h2>Calendar</h2>
+        <p class="placeholder">Calendar comes in Module 3</p>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>About</h2>
-      <dl class="about">
-        <dt>App version</dt>
-        <dd id="about-version">…</dd>
-        <dt>Counter value</dt>
-        <dd id="about-counter">…</dd>
-      </dl>
+    <section data-view="settings" hidden>
+      <div class="card">
+        <h2>About</h2>
+        <dl class="about">
+          <dt>App version</dt>
+          <dd id="about-version">…</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section data-view="analysis" hidden>
+      <div class="card">
+        <h2>Analysis</h2>
+        <p class="placeholder">Coming in Module 5</p>
+      </div>
+    </section>
+
+    <section data-view="export" hidden>
+      <div class="card">
+        <h2>Export</h2>
+        <p class="placeholder">Coming in Module 4</p>
+      </div>
     </section>
   </main>
 </body>
