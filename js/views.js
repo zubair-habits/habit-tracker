@@ -79,8 +79,10 @@ function initMenu() {
 export function initViews() {
   initMenu();
 
+  // Entries this app created carry { view }. An entry without it (the address
+  // was changed by hand to "#settings") falls back to the part after "#".
   window.addEventListener('popstate', (event) => {
-    show(event.state && event.state.view ? event.state.view : 'main');
+    show(event.state && event.state.view ? event.state.view : location.hash.slice(1) || 'main');
   });
 
   const fromHash = location.hash.slice(1);
