@@ -151,6 +151,22 @@
         </div>
         <p class="status-line" role="status" hidden></p>
       </div>
+
+      <div class="card">
+        <h2>Yearly PDF</h2>
+        <label class="field">
+          <span class="field-label">Year</span>
+          <select id="year-select"></select>
+        </label>
+        <div id="year-habits" class="year-habits" role="group" aria-label="Habits to include" hidden></div>
+        <p id="year-message" class="card-note" role="status" hidden></p>
+        <canvas id="year-preview" class="year-preview" role="img" aria-label="Preview of the yearly PDF page" hidden></canvas>
+        <div class="dialog-buttons">
+          <button id="year-share" class="primary" type="button" disabled>Share PDF</button>
+          <button id="year-download" class="secondary" type="button" disabled>Download instead</button>
+        </div>
+        <p id="year-status" class="status-line" role="status" hidden></p>
+      </div>
     </section>
   </main>
 

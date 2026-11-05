@@ -15,7 +15,7 @@ export function getLastBackupAt() {
   return getSetting('lastBackupAt', null);
 }
 
-function downloadFile(blob, name) {
+export function downloadFile(blob, name) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
@@ -27,12 +27,12 @@ function downloadFile(blob, name) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-function canShareFile(file) {
+export function canShareFile(file) {
   return Boolean(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
 }
 
 // Returns 'shared', or 'cancelled' if the owner closed the share sheet, or 'failed'.
-async function shareFile(file) {
+export async function shareFile(file) {
   try {
     await navigator.share({ files: [file] });
     return 'shared';

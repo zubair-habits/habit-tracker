@@ -7,6 +7,7 @@ import { initHabitsView } from './js/habits-view.js';
 import { initCalendarView } from './js/calendar-view.js';
 import { initBackupView } from './js/backup-view.js';
 import { initAnalysisView } from './js/analysis-view.js';
+import { initYearView } from './js/year-view.js';
 
 // On-screen debug console, only when the address ends in ?debug=1.
 if (location.search === '?debug=1') {
@@ -72,6 +73,7 @@ try {
   await initCalendarView();
   await initBackupView();
   initAnalysisView();
+  initYearView();
   onViewShown((view) => {
     if (view === 'settings') refreshAbout().catch((err) => console.error(err));
   });

@@ -913,3 +913,64 @@ button.danger-solid {
   font-size: 0.75rem;
   color: var(--muted);
 }
+
+/* Yearly PDF card (Module 6). */
+
+.field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.year-habits {
+  margin-bottom: 12px;
+}
+
+.year-habits[hidden] {
+  display: none;
+}
+
+.year-habit {
+  margin-bottom: 0;
+}
+
+.year-habit input {
+  flex: none;
+}
+
+.year-habit-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.year-habit-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The page stays white in both themes; the same canvas becomes the PDF. */
+.year-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 297 / 210;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.year-preview[hidden] {
+  display: none;
+}
+
+#year-share:disabled,
+#year-download:disabled {
+  opacity: 0.5;
+}

@@ -33,6 +33,9 @@ const APP_FILES = [
   './js/theme.js',
   './js/theme-boot.js',
   './js/views.js',
+  './js/year-draw.js',
+  './js/year-logic.js',
+  './js/year-view.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -40,6 +43,7 @@ const APP_FILES = [
   './vendor/chart.umd.min.js',
   './vendor/dexie.mjs',
   './vendor/eruda.js',
+  './vendor/jspdf.umd.min.js',
 ];
 
 self.addEventListener('install', (event) => {
