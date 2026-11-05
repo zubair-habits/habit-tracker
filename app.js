@@ -4,6 +4,7 @@ import { initViews, onViewShown } from './js/views.js';
 import { initTheme } from './js/theme.js';
 import { refreshAbout } from './js/about.js';
 import { initHabitsView } from './js/habits-view.js';
+import { initCalendarView } from './js/calendar-view.js';
 
 // On-screen debug console, only when the address ends in ?debug=1.
 if (location.search === '?debug=1') {
@@ -66,6 +67,7 @@ try {
   await initTheme(refreshAbout);
   await refreshAbout();
   await initHabitsView();
+  await initCalendarView();
   onViewShown((view) => {
     if (view === 'settings') refreshAbout().catch((err) => console.error(err));
   });

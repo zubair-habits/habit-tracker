@@ -529,3 +529,211 @@ button.danger-solid {
   margin: 0;
   padding-left: 20px;
 }
+
+/* Month calendar (Module 3) */
+.calendar {
+  padding: 8px;
+}
+
+.cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.card .cal-nav h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--text);
+  font-size: 1.0625rem;
+  text-align: center;
+}
+
+.cal-button {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+}
+
+#cal-prev,
+#cal-next {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cal-button:active,
+.cal-day:active {
+  background: var(--border);
+}
+
+.cal-weekdays,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.cal-weekdays {
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 60px;
+  padding: 4px 1px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+}
+
+.cal-today {
+  border-color: var(--brand);
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+}
+
+.cal-number {
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.cal-today .cal-number {
+  font-weight: 700;
+}
+
+/* Two rows of three: 3 x 9 px dots plus 2 x 3 px gaps = 33 px. */
+.cal-dots {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 3px;
+  width: 33px;
+  max-width: 100%;
+}
+
+/* The colour comes from the habit, set as "color" on each dot. */
+.cal-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.cal-dot-done {
+  background: currentColor;
+}
+
+.cal-dot-extra {
+  background: currentColor;
+  border-radius: 0;
+  transform: rotate(45deg) scale(0.85);
+}
+
+.cal-dot-due,
+.cal-dot-missed,
+.cal-dot-upcoming {
+  border: 2px solid currentColor;
+}
+
+.cal-dot-missed,
+.cal-dot-upcoming {
+  opacity: 0.4;
+}
+
+.cal-more {
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 9px;
+}
+
+/* Day sheet */
+#day-title:focus {
+  outline: none;
+}
+
+.day-error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.day-error[hidden] {
+  display: none;
+}
+
+#day-body {
+  margin-bottom: 16px;
+}
+
+#day-body h3 {
+  margin: 12px 0 4px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+#day-body h3:first-child {
+  margin-top: 0;
+}
+
+#day-body .placeholder {
+  margin: 8px 0 0;
+}
+
+.day-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.day-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 6px 0;
+}
+
+.day-row + .day-row {
+  border-top: 1px solid var(--border);
+}
+
+.day-row .habit-text {
+  flex: 1;
+}
+
+.day-result {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.day-row button {
+  flex: none;
+  width: auto;
+  min-height: 44px;
+  padding: 0 12px;
+}
+
+.day-extras {
+  margin-top: 12px;
+}
+
+.day-extras summary {
+  min-height: 44px;
+  line-height: 44px;
+}

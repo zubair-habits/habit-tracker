@@ -39,9 +39,18 @@
 
   <main class="app-main">
     <section data-view="main">
-      <div class="card">
-        <h2>Calendar</h2>
-        <p class="placeholder">Add habits from Menu → Habits. The calendar arrives in Module 3.</p>
+      <p id="cal-note" class="placeholder" hidden>Add habits from Menu → Habits.</p>
+      <div class="card calendar">
+        <div class="cal-nav">
+          <button id="cal-prev" class="cal-button" type="button" aria-label="Previous month">‹</button>
+          <h2 id="cal-title" aria-live="polite"></h2>
+          <button id="cal-next" class="cal-button" type="button" aria-label="Next month">›</button>
+          <button id="cal-today" class="cal-button" type="button">Today</button>
+        </div>
+        <div class="cal-weekdays" aria-hidden="true">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div id="cal-grid" class="cal-grid"></div>
       </div>
     </section>
 
@@ -161,6 +170,16 @@
       <h3>History</h3>
       <div id="discontinued-history-lists"></div>
     </section>
+  </dialog>
+
+  <dialog id="day-sheet" class="app-dialog" aria-labelledby="day-title">
+    <!-- Focus starts on the title, so no button is ready to fire when the sheet opens. -->
+    <h2 id="day-title" tabindex="-1" autofocus></h2>
+    <p id="day-error" class="day-error" role="alert" hidden></p>
+    <div id="day-body"></div>
+    <div class="dialog-buttons">
+      <button id="day-close" class="secondary" type="button">Close</button>
+    </div>
   </dialog>
 
   <dialog id="ask-dialog" class="app-dialog" aria-labelledby="ask-title">
