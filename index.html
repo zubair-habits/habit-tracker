@@ -30,6 +30,7 @@
       <span></span><span></span><span></span>
     </button>
     <nav id="menu" class="menu" hidden>
+      <button type="button" data-go="habits">Habits</button>
       <button type="button" data-go="settings">Settings</button>
       <button type="button" data-go="analysis">Analysis</button>
       <button type="button" data-go="export">Export</button>
@@ -40,8 +41,18 @@
     <section data-view="main">
       <div class="card">
         <h2>Calendar</h2>
-        <p class="placeholder">The calendar arrives in Module 3</p>
+        <p class="placeholder">Add habits from Menu → Habits. The calendar arrives in Module 3.</p>
       </div>
+    </section>
+
+    <section data-view="habits" hidden>
+      <button id="add-habit" class="primary" type="button">Add habit</button>
+      <p id="habits-empty" class="placeholder">No habits yet. Tap Add habit to create one.</p>
+      <ul id="habit-list" class="habit-list card" hidden></ul>
+      <details id="discontinued" class="card" hidden>
+        <summary>Discontinued (<span id="discontinued-count">0</span>)</summary>
+        <ul id="discontinued-list" class="habit-list"></ul>
+      </details>
     </section>
 
     <section data-view="settings" hidden>
@@ -88,5 +99,74 @@
       </div>
     </section>
   </main>
+
+  <dialog id="habit-dialog" class="app-dialog" aria-labelledby="habit-form-title">
+    <form id="habit-form" novalidate>
+      <h2 id="habit-form-title">Add habit</h2>
+
+      <label class="field">
+        <span class="field-label">Name</span>
+        <input id="habit-name" type="text" maxlength="40" autocomplete="off">
+      </label>
+
+      <fieldset class="field">
+        <legend class="field-label">Colour</legend>
+        <div id="habit-swatches" class="swatches"></div>
+      </fieldset>
+
+      <label class="toggle">
+        <input id="habit-repeat" type="checkbox" checked>
+        Repeats every week
+      </label>
+
+      <div id="habit-repeat-on" class="field">
+        <div id="habit-days" class="chips" role="group" aria-label="Days of the week"></div>
+        <button id="habit-every-day" class="chip every-day" type="button">Every day</button>
+      </div>
+
+      <label id="habit-repeat-off" class="field" hidden>
+        <span class="field-label">Date</span>
+        <input id="habit-date" type="date">
+      </label>
+
+      <label class="field">
+        <span class="field-label">Set time</span>
+        <input id="habit-time" type="time">
+      </label>
+
+      <ul id="habit-errors" class="form-errors" role="alert" hidden></ul>
+
+      <div class="dialog-buttons">
+        <button class="primary" type="submit">Save</button>
+        <button id="habit-cancel" class="secondary" type="button">Cancel</button>
+      </div>
+
+      <button id="habit-discontinue" class="danger" type="button" hidden>Discontinue habit</button>
+
+      <section id="habit-history" class="history" hidden>
+        <h3>History</h3>
+        <div id="habit-history-lists"></div>
+      </section>
+    </form>
+  </dialog>
+
+  <dialog id="discontinued-dialog" class="app-dialog" aria-labelledby="discontinued-title">
+    <h2 id="discontinued-title"></h2>
+    <p id="discontinued-schedule" class="placeholder"></p>
+    <div class="dialog-buttons">
+      <button id="discontinued-restart" class="primary" type="button">Restart</button>
+      <button id="discontinued-close" class="secondary" type="button">Close</button>
+    </div>
+    <section class="history">
+      <h3>History</h3>
+      <div id="discontinued-history-lists"></div>
+    </section>
+  </dialog>
+
+  <dialog id="ask-dialog" class="app-dialog" aria-labelledby="ask-title">
+    <h2 id="ask-title"></h2>
+    <p id="ask-message"></p>
+    <div id="ask-buttons" class="dialog-buttons"></div>
+  </dialog>
 </body>
 </html>

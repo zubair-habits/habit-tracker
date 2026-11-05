@@ -1,8 +1,8 @@
-// Top-corner menu and view switching (Main, Settings, Analysis, Export).
+// Top-corner menu and view switching (Main, Habits, Settings, Analysis, Export).
 // Opening a view other than Main adds a browser history entry, so the
 // Android back button returns to Main. Back on Main leaves the app as normal.
 
-const VIEWS = ['main', 'settings', 'analysis', 'export'];
+const VIEWS = ['main', 'habits', 'settings', 'analysis', 'export'];
 const listeners = [];
 let current = null;
 

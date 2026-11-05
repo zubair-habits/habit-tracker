@@ -9,6 +9,7 @@
   --text: #1c1f1d;
   --muted: #5d6661;
   --border: #dde2de;
+  --danger: #c62828;
   color-scheme: light;
 }
 
@@ -20,6 +21,7 @@
   --text: #e8ece9;
   --muted: #a0aaa4;
   --border: #2e3631;
+  --danger: #ff8a80;
   color-scheme: dark;
 }
 
@@ -32,6 +34,7 @@
     --text: #e8ece9;
     --muted: #a0aaa4;
     --border: #2e3631;
+  --danger: #ff8a80;
     color-scheme: dark;
   }
 }
@@ -250,4 +253,279 @@ button.primary:active {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* Habits view (Module 2) */
+.habit-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.habit-list[hidden] {
+  display: none;
+}
+
+.habit-list.card {
+  padding: 4px 16px;
+}
+
+.habit-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.dot {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.habit-text {
+  display: grid;
+  min-width: 0;
+}
+
+.habit-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.habit-schedule {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+details.card[hidden] {
+  display: none;
+}
+
+details summary {
+  min-height: 24px;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+details .habit-list {
+  margin-top: 8px;
+}
+
+/* Dialogs */
+.app-dialog {
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 16px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+}
+
+.app-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.app-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  overflow-wrap: anywhere;
+}
+
+.app-dialog p {
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.field[hidden] {
+  display: none;
+}
+
+.field-label {
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
+.toggle input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+/* The chosen colour has a tick and a ring, so it is not shown by colour alone. */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(5, 44px);
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.swatch {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 3px #000, 0 0 3px #000;
+}
+
+.swatch[aria-pressed="true"] {
+  outline: 3px solid var(--text);
+  outline-offset: 2px;
+}
+
+.swatch[aria-pressed="true"]::after {
+  content: "✓";
+}
+
+.chips {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.chip {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.every-day {
+  width: 100%;
+}
+
+.form-errors {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.form-errors[hidden] {
+  display: none;
+}
+
+.dialog-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+button.secondary {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+}
+
+button.danger {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 32px;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  background: none;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+button.danger[hidden] {
+  display: none;
+}
+
+button.danger-solid {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--danger);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.history {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.history[hidden] {
+  display: none;
+}
+
+.history h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.history h4 {
+  margin: 8px 0 4px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.history ul {
+  margin: 0;
+  padding-left: 20px;
 }
