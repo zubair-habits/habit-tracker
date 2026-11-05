@@ -162,7 +162,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 ### Export menu
 - **JSON backup** (restorable). See section 7.
 - **CSV export** for reading in Excel. Not used for restore.
-- **Yearly PDF:** a single-page, GitHub-contribution-style calendar of one year (weeks starting Monday), with a coloured dot per habit per day. Shows a preview before download.
+- **Yearly PDF:** A single-page A4 landscape PDF with one GitHub-contribution-style year grid per habit (weeks starting Monday, at most 10 habits, chosen by tick boxes), each day marked as on the month calendar. Shows a preview before saving.
 
 ### Appearance
 - Mobile-first.
@@ -191,6 +191,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 | No undo, late or extra entries (unspecified) | Undo, late (over 12 h) and extra completions allowed | Owner decision |
 | Menu: Settings, Analysis, Export | Habits, Settings, Analysis, Export | Habits need their own view; Settings gains Backup in Module 4 |
 | Backup shared as `.json` | Shared as `.txt` with JSON inside; `.json` by download | Android Chrome's share sheet refuses `.json` files |
+| Single year grid with a dot per habit per day | One small grid per habit, stacked, up to 10 per page | Six dots in a 5 mm square are unreadable on paper |
 
 ---
 
@@ -372,6 +373,8 @@ Not part of the current plan. Kept for later.
 - No marking of future days.
 - No paid services of any kind.
 - No USB debugging; use the on-screen console and About panel instead.
+- No more than 10 habits in one yearly PDF.
+- The yearly PDF's text is part of a picture; it cannot be selected or searched.
 
 ---
 
@@ -460,7 +463,7 @@ One module per Claude Code session. Each module ends with a commit, a deploy, th
 | `sw.js` | Service worker. Stays at the root so its scope covers the whole app. Every app file must be listed in `APP_FILES` |
 | `manifest.webmanifest`, `icons/` | Install details. Never change `id`, `start_url` or `scope` |
 | `js/` | App modules from Module 1 on (`dates.js`, `db.js`, `schedule.js`, views) |
-| `vendor/` | Third-party libraries saved locally (Dexie, Eruda, Chart.js 4.5.1; jsPDF later) |
+| `vendor/` | Third-party libraries saved locally (Dexie, Eruda, Chart.js 4.5.1, jsPDF 4.2.1) |
 | `tests/` | Browser test pages opened with Live Server. Not cached by the service worker |
 | `docs/modules/` | One spec per module, written before that module starts |
 | `docs/HOW-TO-USE-CLAUDE-CODE.md` | Beginner guide for the owner |
