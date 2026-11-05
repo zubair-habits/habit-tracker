@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 5 complete (2026-11-05), next is Module 6.
+- **Phase:** Module 6 complete (2026-11-06). All modules in section 13 are done.
 - **Real daily use started (2026-11-05).** The test habits may now be discontinued or kept; all data from here on is real.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
@@ -27,10 +27,11 @@ Update the **Status** section at the end of every session.
   - **Module 3 (2026-11-05):** the Main view is now the month calendar with coloured dots (done, extra, due, missed, upcoming) and a day sheet: Completed with deviation, Undo, late flag, extras, future days blocked, one completion per habit per day. New files `js/calendar-logic.js` (70 / 70 test cases pass), `js/completions.js`, `js/calendar-view.js`. No database version change (schema still 2). Laptop checks passed. Phone part 1 passed on 0.4.0 (marking a past day was not possible on the phone, see notes). Phone part 2 passed on 0.4.1 (dots, completion times and About counts unchanged).
   - **Module 4 (2026-11-05):** backup and restore. **Back up** shares `habit-backup-<date>.txt` (JSON inside), **Download instead** saves `.json`, Restore accepts both and judges by contents, with checks, a preview and one replace transaction. CSV export, 7-day banner, Last backup in Settings and About. New files `js/backup-logic.js` (88 / 88 test cases pass), `js/backup.js`, `js/backup-view.js`. No database version change (schema still 2). Phone part 1 passed on 0.5.0, part 2 on 0.5.1, part 3 passed: after deleting the site data, Restore from Drive brought everything back.
   - **Module 5 (2026-11-05):** the Analysis view: range buttons, Overview chart, a card per habit with percentage, streaks, timing and on-time, late, missed and extra counts, and weekly and timing charts on tap. Chart.js 4.5.1 in `vendor/`. Counting now uses `isScheduled`, never the stored `extra` flag, in `countDays`, `lastCountedDay`, Analysis and the CSV `Extra` column. New files `js/analysis-logic.js` (74 / 74 test cases pass), `js/charts.js`, `js/analysis-view.js`. No database version change (schema still 2). Test page total 346 / 346. Laptop checks passed. Phone part 1 passed on 0.6.0, part 2 on 0.6.1.
-- **Current version:** `0.6.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 6 (2026-11-06):** the Yearly PDF card in Export: year picker, tick boxes (at most 10 habits), a preview, and **Share PDF** or **Download instead** for a one-page A4 landscape PDF with one year grid per habit. jsPDF 4.2.1 in `vendor/`. New files `js/year-logic.js` (77 / 77 test cases pass), `js/year-draw.js`, `js/year-view.js`. No database version change (schema still 2). Test page total 423 / 423. Laptop checks passed except comparing the opened PDF with the preview, which the phone covered. Phone part 1 passed on 0.7.0, part 2 on 0.7.1.
+- **Current version:** `0.7.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 6 (yearly PDF). Its spec `docs/modules/module-6.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 6`.
+- **Next:** No module planned. Any new feature needs a new module spec, written in the claude.ai planning chat, before work starts.
 - **To do once a habit has a week of real data:** repeat the Module 5 manual count (see Notes from Module 5).
 
 ### Notes from Module 0
@@ -101,6 +102,23 @@ Update the **Status** section at the end of every session.
 - **Chart.js line endings:** Git warns that it may rewrite `vendor/chart.umd.min.js` with Windows line endings in the laptop's folder. The committed copy is unchanged, so to re-check it use `git cat-file blob HEAD:vendor/chart.umd.min.js | sha256sum`, which gave the spec's SHA-256 at commit time.
 - **Part 2's visible change, kept:** the Analysis heading reads "Overview: completion %".
 - **Fewer approval stops:** the spec itself set this for Module 5 (Auto mode, stopping at the plan, pushes, phone tests and problems). The section 14 rule is unchanged for other sessions.
+
+### Notes from Module 6
+- **What the phone tests recorded:** after part 2 the owner reported Habits 4, Completions 3, Settings 3 and that part 2 passed. Part 1 was reported as passed without its numbers, or which habit and days were compared. So the before-and-after match in About rests on the owner's "passed", not on two recorded sets of numbers.
+- **jsPDF was missing at first:** step 1 stopped because `vendor/jspdf.umd.min.js` had not been saved. The owner saved it, and its SHA-256, size and version then matched the spec, also after the commit. To re-check it use `git cat-file blob HEAD:vendor/jspdf.umd.min.js | sha256sum` (Git warns about line endings, as with Chart.js).
+- **jsPDF loading:** `await import(...)` worked under the CSP, so the `<script defer>` fallback was not needed.
+- **Laptop checks that changed:** the built-in browser still refuses service workers, so offline moved to the phone (reported as passed in part 1). It also would not display the PDF, so comparing the PDF with the preview moved to the phone too. The saved files were caught inside the page, and no PDF landed in Downloads. The MediaBox reads `[0 0 841.8899999999999864 595.2799999999999727]`, which is the spec's 841.89 × 595.28 with more decimal places.
+- **Fake date and 404:** a temporary server outside the repository gave a changed `js/dates.js`, `Cache-Control: no-store` and the 404 for jsPDF, on `127.0.0.1:8765`. The fake habits went in through the app's own Restore. The server, its file and the fake data were removed afterwards.
+- **Long-name cut:** the name field stops at 40 characters, which fits the line, so the app itself does not reach the cut. It was checked by drawing a very long Hindi name on a throwaway canvas: the name was cut with "…", the figures were kept and the line stayed inside the page.
+- **Bug found by the 360 px check, fixed:** a tick box shrank beside a long name that wrapped. `flex: none` on the box cured it.
+- **Added beyond the spec:** completions are narrowed to the habit and year before marks are worked out, so years of data cannot slow the page (owner approved in the plan; `dayMark` is unchanged). If building the PDF fails, the status line says "PDF couldn't be made." If saving throws, it says "PDF not saved." The two save buttons fade while disabled. There are extra test cases beyond the spec's list.
+- **Choices the spec left open (owner approved in the plan):** the upcoming dot is 30% of the cell. The title is 6 mm bold and the "Made" date 3.5 mm. A ring's outer edge and a diamond's point-to-point size are 70% of the cell. Long names are cut between whole letters. Ticks and year reset each time Export opens from the menu and stay when returning from the share sheet.
+- **Also chosen while building:** month and weekday labels use the heading font size, capped at 3 mm. The key uses 4 mm cells, 3 mm text and grey marks.
+- **Stale after midnight:** if the app stays on Export past midnight, the preview and PDF keep the old day until Export is next opened from the menu. This differs from Analysis, which redraws on returning to the app; a redraw here would lose the status line and the ready PDF after the share sheet closes.
+- **Page width at 10 habits:** a 10-habit page uses about the left half of the width, because the cell size follows the height. This is what the spec's layout gives.
+- **Node:** still not installed, so tests ran on the browser test page, in the laptop's time zone only.
+- **Part 2's visible change, kept:** the Yearly PDF card reads "One A4 page, up to 10 habits."
+- **Fewer approval stops:** the spec set this for Module 6 too. The section 14 rule is unchanged for other sessions.
 
 ---
 
