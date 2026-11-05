@@ -73,7 +73,7 @@ Update the **Status** section at the end of every session.
 
 ### Notes from Module 4
 - **Permission rules file:** the owner's `settings.json` was first found at `.claude/skills/settings.json`, where its rules did nothing. With the owner's approval Claude moved it, unchanged, to `.claude/settings.json`. The rules took effect without a restart: a `curl` command was denied straight away.
-- **Gap in the rules, not changed:** they name only `Bash(...)` commands, so they probably do not cover Claude's PowerShell tool. Claude used Bash for git and deletions. Consider adding PowerShell rules from the planning chat.
+- **PowerShell:** the Bash deny rules in `.claude/settings.json` also turn Claude Code's PowerShell tool off on Windows with Git Bash (Claude Code docs, checked 2026-11-05). Adding any `PowerShell(...)` rule would turn it back on, so none are added. Each module's step 1 confirms the PowerShell tool is absent.
 - **Added beyond the spec (owner approved):** every new backup gets the same checks Restore uses. If they fail, the file still saves, the status line warns, and `lastBackupAt` is not updated. A share failure other than closing the sheet falls back to download. Neither path was triggered in testing: the first needs a bad row, the second cannot happen on the laptop.
 - **Also added:** `formatBackupTime`, `lastBackupLine` and `bannerText` in `js/backup-logic.js`, and extra test cases beyond the spec's list. `CLAUDE.md` section 8 now names `habit-backup-*`.
 - **Choices the spec left open:** the backup age reads "today" or "1 day ago". The Restore preview counts the rows in the file, not its `counts` field. Restore ignores a leading byte-order mark. No valid `schemaVersion` reads "This isn't a Habit Tracker backup."; no `data` section reads "This backup is damaged: …". An unreadable file shows "That file couldn't be read." A cancelled CSV share shows "CSV not saved."
@@ -291,9 +291,9 @@ Updates and backups are linked: updates must not touch data, and backups are the
 
 ### Counting rules
 - **Y days** (discontinue message and percentages) = scheduled days within active periods, up to and including today.
-- **X days** = scheduled days within that range that have a non-extra completion.
+- **X days** = scheduled days within that range that have a completion. Whether a completion is scheduled or extra is decided by `isScheduled` on its date, never by the stored `extra` flag. The flag is a record of the moment of marking and is kept unchanged.
 - **Streak** = consecutive scheduled days completed, skipping unscheduled days.
-- **Discontinue** sets the open period's end to today if the habit has a non-extra completion today, otherwise yesterday. The discontinue message counts up to the same day.
+- **Discontinue** sets the open period's end to today if today is scheduled and has a completion, otherwise yesterday. The discontinue message counts up to the same day.
 - Weeks start on **Monday** everywhere: month view, weekly maths, yearly PDF.
 
 ### Settings and records
@@ -442,7 +442,7 @@ One module per Claude Code session. Each module ends with a commit, a deploy, th
 | `sw.js` | Service worker. Stays at the root so its scope covers the whole app. Every app file must be listed in `APP_FILES` |
 | `manifest.webmanifest`, `icons/` | Install details. Never change `id`, `start_url` or `scope` |
 | `js/` | App modules from Module 1 on (`dates.js`, `db.js`, `schedule.js`, views) |
-| `vendor/` | Third-party libraries saved locally (Dexie, Eruda; Chart.js and jsPDF later) |
+| `vendor/` | Third-party libraries saved locally (Dexie, Eruda, Chart.js 4.5.1; jsPDF later) |
 | `tests/` | Browser test pages opened with Live Server. Not cached by the service worker |
 | `docs/modules/` | One spec per module, written before that module starts |
 | `docs/HOW-TO-USE-CLAUDE-CODE.md` | Beginner guide for the owner |
