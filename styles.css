@@ -738,3 +738,48 @@ button.danger-solid {
   min-height: 44px;
   line-height: 44px;
 }
+
+.backup-banner-area {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+}
+
+.backup-banner-area:not(:has(> :not([hidden]))) {
+  display: none;
+}
+
+.backup-banner[hidden] {
+  display: none;
+}
+
+.backup-banner p {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.banner-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.card-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.status-line {
+  margin: 12px 0 0;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.status-line[hidden] {
+  display: none;
+}
+
+.status-error {
+  color: var(--danger);
+  font-weight: 600;
+}

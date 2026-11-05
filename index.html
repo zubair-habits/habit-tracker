@@ -37,6 +37,17 @@
     </nav>
   </header>
 
+  <div class="backup-banner-area">
+    <div id="backup-banner" class="card backup-banner" role="status" hidden>
+      <p id="backup-banner-text"></p>
+      <div class="banner-buttons">
+        <button id="backup-banner-now" class="primary" type="button">Back up</button>
+        <button id="backup-banner-later" class="secondary" type="button">Later</button>
+      </div>
+    </div>
+    <p id="backup-banner-status" class="status-line" role="status" hidden></p>
+  </div>
+
   <main class="app-main">
     <section data-view="main">
       <p id="cal-note" class="placeholder" hidden>Add habits from Menu → Habits.</p>
@@ -76,6 +87,18 @@
       </div>
 
       <div class="card">
+        <h2>Backup</h2>
+        <p id="backup-last" class="card-note"></p>
+        <div class="dialog-buttons">
+          <button class="primary" type="button" data-backup="share">Back up</button>
+          <button class="secondary" type="button" data-backup="download">Download instead</button>
+          <button id="backup-restore" class="secondary" type="button">Restore</button>
+        </div>
+        <input id="restore-file" type="file" accept=".json,.txt,application/json,text/plain" hidden>
+        <p class="status-line" role="status" hidden></p>
+      </div>
+
+      <div class="card">
         <h2>About</h2>
         <dl class="about">
           <dt>App version</dt>
@@ -90,6 +113,8 @@
           <dd id="about-completions">…</dd>
           <dt>Settings</dt>
           <dd id="about-settings">…</dd>
+          <dt>Last backup</dt>
+          <dd id="about-last-backup">…</dd>
         </dl>
       </div>
     </section>
@@ -103,8 +128,21 @@
 
     <section data-view="export" hidden>
       <div class="card">
-        <h2>Export</h2>
-        <p class="placeholder">Coming in Module 4</p>
+        <h2>Backup</h2>
+        <div class="dialog-buttons">
+          <button class="primary" type="button" data-backup="share">Back up</button>
+          <button class="secondary" type="button" data-backup="download">Download instead</button>
+        </div>
+        <p class="status-line" role="status" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>CSV</h2>
+        <p class="card-note">For reading in Excel. Can't be restored.</p>
+        <div class="dialog-buttons">
+          <button id="csv-export" class="primary" type="button">Export CSV</button>
+        </div>
+        <p class="status-line" role="status" hidden></p>
       </div>
     </section>
   </main>
