@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 1 complete (2026-11-05), next is Module 2.
+- **Phase:** Module 2 complete (2026-11-05), next is Module 3.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
   - GitHub email privacy on: "Keep my email addresses private" and "Block command line pushes that expose my email".
@@ -22,10 +22,11 @@ Update the **Status** section at the end of every session.
   - Claude Code terminal tool installed (v2.1.294, `C:\Users\zzuba\.local\bin`), added to PATH, and started in `app_3`.
   - **Module 0 (2026-10-08):** scaffold, manifest, service worker, update banner, CSP, Dexie 4.0.11 and Eruda 3.4.1 in `vendor/`, IndexedDB test counter, About panel. GitHub Pages live from `main`, root. App installed on the phone; phone update test passed (0.1.1 → 0.1.2, counter unchanged at 5).
   - **Module 1 (2026-11-05):** Dexie version 2 (`habits`, `completions`, `settings`; `testCounter` removed by migration), `schemaVersion` row, persistent storage request, `js/dates.js`, `isScheduled` in `js/schedule.js` (25 / 25 test cases pass), top-corner menu with Main, Settings, Analysis and Export views and back-button history, theme (System, Light, Dark), extended About panel. Built in a cloud session; merged through pull requests #1 (0.2.0) and #2 (0.2.1). Phone part 1 passed (counter gone; 0.2.0, schema 2, persistent storage Granted, counts 0 / 0 / 1, then settings 2 after choosing Dark). Phone part 2 passed (0.2.1, Theme still Dark, settings still 2).
-- **Current version:** `0.2.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 2 (2026-11-05):** Habits view in the menu: add, edit, recolour, re-time, reschedule, discontinue (soft delete), restart and same-name "continue or new record", with read-only History. New files `js/habit-logic.js` (77 / 77 test cases pass), `js/habits.js`, `js/habits-view.js`, `js/dialog.js`. No database version change (schema still 2). Phone part 1 passed (on 0.3.1, see notes). Phone part 2 passed (0.3.2, the same 3 habits, Test Gym's two-version History kept, About shows Habits 3).
+- **Current version:** `0.3.2`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 2 (habit management). Its spec `docs/modules/module-2.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 2`.
+- **Next:** Module 3 (month view and completion entry). Its spec `docs/modules/module-3.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 3`.
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -44,6 +45,16 @@ Update the **Status** section at the end of every session.
 - **Unverified commits:** commits use the no-reply email without a signature, so GitHub labels them Unverified. The owner accepted this; commits are never re-authored to another email.
 - **Laptop updates:** the Claude desktop app has no Terminal pane in cloud sessions. After each merge, update the laptop from the VS Code terminal or PowerShell in `app_3` with `git checkout main`, then `git pull origin main`.
 - **Backup before data deploys:** not possible before Module 4 (no backup feature yet). Acceptable in Module 1 because the phone held only the test counter.
+
+### Notes from Module 2
+- **Versions differ from the spec:** the spec expected 0.3.0 for phone part 1 and 0.3.1 for part 2. An extra commit (`ca6c0c8`, 0.3.1, wording change only) was already on the laptop when the owner pushed, so the phone went straight to 0.3.1 and part 1 ran on that. Part 2 used 0.3.2 instead. Where that commit came from was not established: it carries Claude's attribution but is not in the session's visible history, and the session restarted around then. Uncommitted edits that undid it also appeared on the laptop. They were checked and the wording went into the 0.3.2 commit; the version was not rolled back.
+- **Fewer approval stops:** for this module the owner told Claude not to stop at every step, only for major decisions, big guesses or problems it cannot solve. The section 14 rule is unchanged for other sessions unless the owner says the same again.
+- **Local checks without the owner:** Node is not installed on the laptop, so the tests ran on the browser test page, on Indian time only (no UTC run). The owner's Live Server and DevTools checklist (step 7) was replaced by scripted checks in the desktop app's built-in browser against a temporary local Python web server, including a reload with that server shut down for the offline check. The temporary settings file and test data were removed afterwards. The Android back button can only be tested on the phone, and it passed there.
+- **Choices the spec left open:** "Continue the old habit" keeps the old habit's spelling of the name. An edit may keep a one-time date that has passed; a restart needs a new date. A restart is refused if an active habit has that name. Tapping a discontinued habit opens a read-only screen with History, Restart and Close. "N days of history" counts scheduled days completed. If several discontinued habits share a name, "most recently discontinued" means the latest last-period end, then the later `createdAt`.
+- **Added beyond the spec:** `mostRecentlyDiscontinued`, `formatDate` and `describeHistory` in `js/habit-logic.js`, and an optional `existingDate` for `validateInput`. Changing view closes any open dialog, because a laptop browser's back button changes the view without closing it.
+- **Dialogs:** buttons in `js/dialog.js` answer straight away instead of waiting for the `close` event, because the browser delivers that event only when it next draws the page. Module 3's Undo should reuse these dialogs.
+- **Known wording:** the discontinue message can read "1 days", because the spec fixes its exact wording. One-time habits stay in the active list after their date until discontinued; the spec has no rule for removing them.
+- **Service worker in testing:** it serves files from its cache first, so after editing code on a test address, unregister it and clear its caches before reloading, or the old code runs.
 
 ---
 
