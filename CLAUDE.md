@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 2 complete (2026-11-05), next is Module 3.
+- **Phase:** Module 3 complete (2026-11-05), next is Module 4.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
   - GitHub email privacy on: "Keep my email addresses private" and "Block command line pushes that expose my email".
@@ -23,10 +23,11 @@ Update the **Status** section at the end of every session.
   - **Module 0 (2026-10-08):** scaffold, manifest, service worker, update banner, CSP, Dexie 4.0.11 and Eruda 3.4.1 in `vendor/`, IndexedDB test counter, About panel. GitHub Pages live from `main`, root. App installed on the phone; phone update test passed (0.1.1 → 0.1.2, counter unchanged at 5).
   - **Module 1 (2026-11-05):** Dexie version 2 (`habits`, `completions`, `settings`; `testCounter` removed by migration), `schemaVersion` row, persistent storage request, `js/dates.js`, `isScheduled` in `js/schedule.js` (25 / 25 test cases pass), top-corner menu with Main, Settings, Analysis and Export views and back-button history, theme (System, Light, Dark), extended About panel. Built in a cloud session; merged through pull requests #1 (0.2.0) and #2 (0.2.1). Phone part 1 passed (counter gone; 0.2.0, schema 2, persistent storage Granted, counts 0 / 0 / 1, then settings 2 after choosing Dark). Phone part 2 passed (0.2.1, Theme still Dark, settings still 2).
   - **Module 2 (2026-11-05):** Habits view in the menu: add, edit, recolour, re-time, reschedule, discontinue (soft delete), restart and same-name "continue or new record", with read-only History. New files `js/habit-logic.js` (77 / 77 test cases pass), `js/habits.js`, `js/habits-view.js`, `js/dialog.js`. No database version change (schema still 2). Phone part 1 passed (on 0.3.1, see notes). Phone part 2 passed (0.3.2, the same 3 habits, Test Gym's two-version History kept, About shows Habits 3).
-- **Current version:** `0.3.2`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 3 (2026-11-05):** the Main view is now the month calendar with coloured dots (done, extra, due, missed, upcoming) and a day sheet: Completed with deviation, Undo, late flag, extras, future days blocked, one completion per habit per day. New files `js/calendar-logic.js` (70 / 70 test cases pass), `js/completions.js`, `js/calendar-view.js`. No database version change (schema still 2). Laptop checks passed. Phone part 1 passed on 0.4.0 (marking a past day was not possible on the phone, see notes). Phone part 2 passed on 0.4.1 (dots, completion times and About counts unchanged).
+- **Current version:** `0.4.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 3 (month view and completion entry). Its spec `docs/modules/module-3.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 3`.
+- **Next:** Module 4 (backup and restore). Its spec `docs/modules/module-4.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 4`.
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -55,6 +56,18 @@ Update the **Status** section at the end of every session.
 - **Dialogs:** buttons in `js/dialog.js` answer straight away instead of waiting for the `close` event, because the browser delivers that event only when it next draws the page. Module 3's Undo should reuse these dialogs.
 - **Known wording:** the discontinue message can read "1 days", because the spec fixes its exact wording. One-time habits stay in the active list after their date until discontinued; the spec has no rule for removing them.
 - **Service worker in testing:** it serves files from its cache first, so after editing code on a test address, unregister it and clear its caches before reloading, or the old code runs.
+
+### Notes from Module 3
+- **Fewer approval stops:** the owner said "Build mod 3" and Claude took that to mean no stop at every step. Claude stopped for pushes and phone tests. The section 14 rule is unchanged for other sessions unless the owner says the same again.
+- **Past-day marking was tested on the laptop only:** the phone's test habits were created on 2026-11-05, so they had no earlier active days. On the laptop a past day showed "3 d 11 h late · Late". The owner accepted the laptop result. Claude offered a "Test Late" habit with a set time of 00:05 to show the Late flag on the phone; whether it was used was not recorded. All data is test data until Module 4 anyway.
+- **Pushes:** the owner ran `git push` in the Terminal pane for 0.4.0 and 0.4.1. Claude's own `git push` found nothing left to send both times. The completions count on the phone was reported as unchanged, not as a number.
+- **Local checks:** Node is still not installed, so the tests ran on the browser test page, on Indian time only. The Android back button can only be tested on the phone, and it passed there.
+- **Choices the spec left open:** the extras heading reads "Also done today" only on today, and "Also done on this day" on other dates. Completed rows show the set time copied onto the completion. The day sheet starts with focus on its title, so no button is ready to fire. A future day with nothing scheduled shows both "Nothing scheduled on this day." and the future-day message.
+- **Added beyond the spec:** each `dayEntries` entry also has `setTime`. `dayDots` and `dayEntries` sort by `createdAt` themselves. Undo does not re-check rule 6, because that rule would refuse it with "Already completed."; it deletes the one row by key, in a transaction over `completions` only.
+- **Part 2's visible change, kept:** today's date number is green (`--brand`).
+- **For Module 5 (dot and flag can disagree):** dots and sheet sections use `isScheduled`, as the spec says, but percentages use the stored `extra` flag. If an extra is marked and the habit is edited the same day so that day becomes scheduled, the dot fills as a normal completion while the row stays `extra: true`. The reverse also happens: a scheduled completion followed by an edit the same day shows as a diamond with `extra: false`. Decide which one Analysis trusts.
+- **Testing:** a plain Python web server lets the browser keep old copies of files (0.3.2 ran instead of the new code at first). A throwaway server sending `Cache-Control: no-store`, plus a `cache: 'reload'` fetch of each file once, cured it. Both the server script and `.claude/launch.json` were temporary and are gone.
+- **`/build-module` instructions:** they still say Claude cannot push, which is out of date with the section 14 rule. Not changed.
 
 ---
 
