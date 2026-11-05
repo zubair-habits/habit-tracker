@@ -72,7 +72,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 
 ### Main screen
 - Full-month calendar on open, weeks starting on **Monday**; each habit shown as a coloured dot on each day it is scheduled.
-- Top-corner menu with three sections: Settings, Analysis, Export.
+- Top-corner menu with four sections: Habits, Settings, Analysis, Export.
 
 ### Habits
 - Add, edit, recolour, and set the time of any habit at any time.
@@ -132,6 +132,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 | Daily habits only (implied) | Weekday picker with weekly repeat, or a one-time date | Owner decision |
 | Schedule fixed once set (unspecified) | Schedule can change; history kept per habit | Owner decision |
 | No undo, late or extra entries (unspecified) | Undo, late (over 12 h) and extra completions allowed | Owner decision |
+| Menu: Settings, Analysis, Export | Habits, Settings, Analysis, Export | Habits need their own view; Settings gains Backup in Module 4 |
 
 ---
 
@@ -235,7 +236,9 @@ Updates and backups are linked: updates must not touch data, and backups are the
   - `setTime`: the habit's set time
 - Editing the days, repeat setting or set time **adds a new version** starting today. Earlier versions are never changed.
 - To decide whether a given day is scheduled, the app uses the version in effect on that day. A day only counts if it also falls inside an active period.
-- **Merge** reactivates the old ID, starts a new active period, and adds a schedule version for the chosen schedule. **New record** creates a new ID under a different name.
+- **Merge** reactivates the old ID using the Restart rule below, and adds a schedule version for the chosen schedule. **New record** creates a new ID under a different name.
+- **Restart** (merge): if the last period's end is yesterday or later, set it to `null`; otherwise add `{ start: today, end: null }`. Then append a schedule version from today. A habit removed on the day it was added keeps an empty period (`end = start − 1`), shown in History as "Removed on the day it was added".
+- Habit names are compared trimmed and case-insensitively; two active habits never share a name.
 
 ### Completions
 - Each completion stores: habit ID, the date it belongs to (local `YYYY-MM-DD`), the **set time copied at the moment of completion**, the exact completion timestamp, the deviation in minutes, a `late` flag, and an `extra` flag.
@@ -249,6 +252,7 @@ Updates and backups are linked: updates must not touch data, and backups are the
 - **Y days** (discontinue message and percentages) = scheduled days within active periods, up to and including today.
 - **X days** = scheduled days within that range that have a non-extra completion.
 - **Streak** = consecutive scheduled days completed, skipping unscheduled days.
+- **Discontinue** sets the open period's end to today if the habit has a non-extra completion today, otherwise yesterday. The discontinue message counts up to the same day.
 - Weeks start on **Monday** everywhere: month view, weekly maths, yearly PDF.
 
 ### Settings and records
