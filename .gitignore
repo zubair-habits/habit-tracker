@@ -1,5 +1,5 @@
 # Personal data: never commit backups or exports (CLAUDE.md section 8)
-habit-backup-*.json
+habit-backup-*
 *.csv
 *.pdf
 backups/

@@ -17,7 +17,7 @@ Build Module $0 of the Habit Tracker app.
 5. Rules for the whole session:
    - The owner is new to Git, terminals and web development. Use plain words, and explain any term the first time it appears.
    - Never break the rules in sections 6, 7 and 8 of `CLAUDE.md`. If a step would break one, stop and say so.
-   - You cannot push to GitHub or download files. When either is due, give the owner the exact command to type, starting with `!` (Git Bash syntax).
+   - Pushing follows the **Pushing (Local sessions)** rule in `CLAUDE.md` section 14. Downloads: give the owner the exact command to type.
    - When the owner must test something (Live Server, Chrome DevTools, the phone), give a short numbered checklist of what to do and what they should see, then wait for their report.
    - If usage is running low, stop at the end of a step, commit locally without pushing, and record progress in Status.
    - Use British English.

@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git -C * push *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git reset *)",
+      "Bash(git config *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(git clean *)",
+      "Bash(git checkout -- *)",
+      "Bash(git restore *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git branch -D *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(pip *)",
+      "Bash(winget *)",
+      "Edit(./manifest.webmanifest)",
+      "Edit(./vendor/**)",
+      "Edit(./.claude/settings.json)"
+    ]
+  }
+}

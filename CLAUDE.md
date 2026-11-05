@@ -157,6 +157,7 @@ A personal habit tracker that runs as an installable web app (PWA) on one Androi
 | Schedule fixed once set (unspecified) | Schedule can change; history kept per habit | Owner decision |
 | No undo, late or extra entries (unspecified) | Undo, late (over 12 h) and extra completions allowed | Owner decision |
 | Menu: Settings, Analysis, Export | Habits, Settings, Analysis, Export | Habits need their own view; Settings gains Backup in Module 4 |
+| Backup shared as `.json` | Shared as `.txt` with JSON inside; `.json` by download | Android Chrome's share sheet refuses `.json` files |
 
 ---
 
@@ -175,6 +176,7 @@ Updates and backups are linked: updates must not touch data, and backups are the
 - **Never change the address:** never rename the organisation `zubair-habits`, the repository `habit-tracker`, or the manifest's `id`, `start_url` or `scope`. Any of these creates a new, empty storage area.
 - The service worker may delete only its own caches (names starting with `ht-`). It must never touch IndexedDB.
 - Schema changes happen only through a Dexie version upgrade with a migration. Never delete or rename a table without a migration.
+- Every new Dexie version must ship with a matching backup migration in `MIGRATIONS` (`js/backup-logic.js`) in the same commit, so older backups always restore.
 - The only code paths allowed to delete data are Restore (after confirmation) and Undo of a single completion (after confirmation).
 - One version number, in one place. Bumping it must trigger the update banner.
 - **Before deploying any change to the data structure:** take a JSON backup on the phone first.
@@ -185,8 +187,8 @@ Updates and backups are linked: updates must not touch data, and backups are the
 ## 7. Non-negotiable 2: backup and restore
 
 ### Backup
-- Settings or Export → **Back up** creates a JSON file named `habit-backup-YYYY-MM-DD.json`.
-- It opens Android's share sheet with the file attached; the owner saves it to Google Drive. Fallback: download to the Downloads folder.
+- Settings or Export → **Back up** creates a backup file and shares it as `habit-backup-YYYY-MM-DD.txt` (JSON inside), because Android Chrome cannot share `.json`. **Download instead** saves `habit-backup-YYYY-MM-DD.json`.
+- Back up opens Android's share sheet with the file attached; the owner saves it to Google Drive. Fallback: download to the Downloads folder.
 - The file contains everything: habits (including discontinued ones and their full schedule history), completions, settings, the app version, and a **schema version number**.
 - The app records the time of the last backup.
 
@@ -194,7 +196,7 @@ Updates and backups are linked: updates must not touch data, and backups are the
 - On opening the app, if the last backup is more than 7 days old, a banner asks for a backup.
 
 ### Restore
-- Settings → **Restore** → pick a JSON backup file.
+- Settings → **Restore** → pick a backup file. Restore accepts `.txt` or `.json` and judges by the contents, never the name.
 - The app checks the file is a habit-tracker backup, then shows its contents (number of habits, number of completions, backup date).
 - After confirmation it **replaces** all current data. No merging.
 - Older backups are upgraded to the current schema before restoring, using the schema version number. A backup from any earlier version must always restore.
@@ -221,7 +223,7 @@ Updates and backups are linked: updates must not touch data, and backups are the
 - Two-factor authentication on the GitHub account. No collaborators on the repository.
 - GitHub email privacy settings stay on (already done).
 - Commits use only the no-reply address in section 3, set as this repository's local Git email.
-- `.gitignore` blocks backup and export files (`habit-backup-*.json`, `*.csv`, exported PDFs, `backups/`, `exports/`).
+- `.gitignore` blocks backup and export files (`habit-backup-*`, `*.csv`, exported PDFs, `backups/`, `exports/`).
 - Never commit personal data. Test data must be fake.
 - Keep the Google Drive backup file private; never share its link.
 - Backups are not encrypted. A forgotten password would make every backup useless, and loss is the bigger risk.
@@ -407,13 +409,13 @@ One module per Claude Code session. Each module ends with a commit, a deploy, th
 - At the end of each session: update the Status section, commit, and state the next module.
 - Each module has a full spec in `docs/modules/module-N.md`. Follow its steps in order. If the spec and this file disagree, stop and ask; do not guess. If the spec for a module does not exist yet, stop: specs are written in the claude.ai planning chat, not invented in Claude Code.
 - **Pushing (Local sessions):** never push without the owner's approval. When the owner is at the laptop, they type `git push` in the Terminal pane. When the owner is driving the session from the phone through Remote Control, Claude may run `git push` itself, but only after the owner approves that exact command in the permission box. If the push asks for a GitHub sign-in on the laptop, stop and tell the owner it must wait until they are at the laptop. The owner works in the **Claude desktop app** (Code tab, Local environment, folder `app_3`): the Terminal pane opens with Ctrl+`. In the terminal version of Claude Code it is `! git push` (Git Bash syntax). Wherever a module spec says `! git push`, give the Desktop form. Downloads work the same way.
-- **Session setup (Desktop app):** normally environment **Local**, folder `app_3`, permission mode **Manual**.
+- **Session setup (Desktop app):** normally environment **Local**, folder `app_3`, permission mode **Manual** or **Auto** (see below).
 - **Cloud sessions** (environment such as `P1`, working from the GitHub copy of the repository) are allowed **only for writing code and running automated tests**. In a cloud session:
   - Before the first commit, run `git config user.name "Zbr-ansr"` and `git config user.email "145891905+Zbr-ansr@users.noreply.github.com"`.
   - Commit to the session's own branch, push only that branch, and open a pull request into `main`. **Never push to `main` or merge anything**: merging deploys to the phone, so the owner merges after the local tests.
   - Steps that need Live Server, Chrome DevTools or the phone are done later in a Local session, after checking out that branch.
 - **Running out of usage mid-module:** stop at the end of a step, commit locally, and **do not push** (pushing to `main` deploys to the phone). Record in Status "Module N in progress: steps 1 to X done, not pushed".
-- Do not use Auto, Accept edits or Bypass permissions modes in this project; Manual only.
+- Permission mode **Manual** or **Auto**. Auto is allowed only while `.claude/settings.json` (committed) is in place: its `ask` rules force a permission box for `git push` and other history-changing git commands even in Auto, and its `deny` rules block destructive and network commands. Never edit that file, and never work round a rule with another command spelling. Accept edits and Bypass permissions are never used.
 
 ---
 
@@ -430,4 +432,5 @@ One module per Claude Code session. Each module ends with a commit, a deploy, th
 | `docs/modules/` | One spec per module, written before that module starts |
 | `docs/HOW-TO-USE-CLAUDE-CODE.md` | Beginner guide for the owner |
 | `.claude/skills/build-module/SKILL.md` | The `/build-module N` command (created in Module 1 step 1 from `docs/setup/build-module-SKILL.md`; edit both together) |
+| `.claude/settings.json` | Project permission rules for Auto mode. Never edited by Claude |
 | `CLAUDE.md` | This file |
