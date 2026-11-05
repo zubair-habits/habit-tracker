@@ -10,7 +10,7 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 4 complete (2026-11-05), next is Module 5.
+- **Phase:** Module 5 complete (2026-11-05), next is Module 6.
 - **Real daily use started (2026-11-05).** The test habits may now be discontinued or kept; all data from here on is real.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
@@ -26,10 +26,12 @@ Update the **Status** section at the end of every session.
   - **Module 2 (2026-11-05):** Habits view in the menu: add, edit, recolour, re-time, reschedule, discontinue (soft delete), restart and same-name "continue or new record", with read-only History. New files `js/habit-logic.js` (77 / 77 test cases pass), `js/habits.js`, `js/habits-view.js`, `js/dialog.js`. No database version change (schema still 2). Phone part 1 passed (on 0.3.1, see notes). Phone part 2 passed (0.3.2, the same 3 habits, Test Gym's two-version History kept, About shows Habits 3).
   - **Module 3 (2026-11-05):** the Main view is now the month calendar with coloured dots (done, extra, due, missed, upcoming) and a day sheet: Completed with deviation, Undo, late flag, extras, future days blocked, one completion per habit per day. New files `js/calendar-logic.js` (70 / 70 test cases pass), `js/completions.js`, `js/calendar-view.js`. No database version change (schema still 2). Laptop checks passed. Phone part 1 passed on 0.4.0 (marking a past day was not possible on the phone, see notes). Phone part 2 passed on 0.4.1 (dots, completion times and About counts unchanged).
   - **Module 4 (2026-11-05):** backup and restore. **Back up** shares `habit-backup-<date>.txt` (JSON inside), **Download instead** saves `.json`, Restore accepts both and judges by contents, with checks, a preview and one replace transaction. CSV export, 7-day banner, Last backup in Settings and About. New files `js/backup-logic.js` (88 / 88 test cases pass), `js/backup.js`, `js/backup-view.js`. No database version change (schema still 2). Phone part 1 passed on 0.5.0, part 2 on 0.5.1, part 3 passed: after deleting the site data, Restore from Drive brought everything back.
-- **Current version:** `0.5.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 5 (2026-11-05):** the Analysis view: range buttons, Overview chart, a card per habit with percentage, streaks, timing and on-time, late, missed and extra counts, and weekly and timing charts on tap. Chart.js 4.5.1 in `vendor/`. Counting now uses `isScheduled`, never the stored `extra` flag, in `countDays`, `lastCountedDay`, Analysis and the CSV `Extra` column. New files `js/analysis-logic.js` (74 / 74 test cases pass), `js/charts.js`, `js/analysis-view.js`. No database version change (schema still 2). Test page total 346 / 346. Laptop checks passed. Phone part 1 passed on 0.6.0, part 2 on 0.6.1.
+- **Current version:** `0.6.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 5 (analysis). Its spec `docs/modules/module-5.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 5`.
+- **Next:** Module 6 (yearly PDF). Its spec `docs/modules/module-6.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 6`.
+- **To do once a habit has a week of real data:** repeat the Module 5 manual count (see Notes from Module 5).
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -83,6 +85,22 @@ Update the **Status** section at the end of every session.
 - **Node:** still not installed, so tests ran on the browser test page, on Indian time only.
 - **Part 2's visible change, kept:** the Export view's CSV heading reads "CSV for Excel".
 - **Not recorded:** the owner reported all three phone tests as passed, and "All came back" for part 3, but the Habits and Completions numbers were not given.
+
+### Notes from Module 5
+- **The manual count on the phone was thin:** the spec asks for a habit with a week of history, but as far as this file shows, the real habits started on the day of the test, so the count could only be about "1 of 1". The owner reported both phone tests as passed; the Habits and Completions numbers and the card's figures were not given. Multi-week data and a schedule change were checked on the laptop only. With a week of real data, repeat the count: on **This month**, X = filled circles before today plus today's dot if filled, Y = X + faded rings before today, extras = diamonds; the card must match.
+- **Two old tests rewritten, with the owner's approval:** "Extra today does not count as completed" and "Extras are left out of x" in `tests/habit-logic.test.js` used a stored `extra: true` on a scheduled day, which decision 1 no longer treats as an extra. They now use a real extra on an unscheduled day.
+- **Fake date, differing from the spec (owner approved):** a temporary test server outside the repository served a changed copy of `js/dates.js` with a fixed `todayStr`, in place of a temporary query parameter. The whole app saw that date and no temporary code touched the repository. The same server gave the 404 for Chart.js. It sent `Cache-Control: no-store` on `127.0.0.1:8765`, and it and the fake data were removed afterwards.
+- **Chart.js loading:** `await import(...)` worked under the CSP, so the `<script>` fallback was not needed.
+- **Bug found by the 360 px check, fixed:** a chart keeps its drawn width, so a chart drawn in a wide window held the page wide after it shrank. `minmax(0, 1fr)` columns and `min-width: 0` on the Analysis grids cured it. Rechecked after a reload at 360 px, not by shrinking a wide window again.
+- **Added beyond the spec:** `tests/analysis-fixture.js` (shared by the test files and the laptop checks, not cached by the service worker); `overviewBars` in `js/analysis-logic.js`; a comment correction in `js/habits.js`.
+- **Choices the spec left open (owner approved):** an average that rounds to 0 reads "average on time" or "on time (1 completion)", in lower case. An Overview with no bars shows "No scheduled days in this range." An open card with nothing to chart shows "Nothing to chart in this range." Only the top of a card opens and closes it, so touching a chart does not close it. Returning from another app keeps the range and open card; opening Analysis from the menu resets to Last 30 days and collapses Discontinued. A CSV row with no matching habit uses the stored `extra` flag. Also: collapsing Discontinued closes any card open inside it.
+- **Known wording:** "1 of 1 scheduled days" follows the spec's fixed wording.
+- **Charts stop outside Analysis:** they are destroyed on leaving the view and redrawn on return, so a theme change in Settings shows when Analysis reopens.
+- **Laptop checks that changed:** the built-in browser still refuses service workers, so offline moved to the phone (reported as passed in part 1). The CSV was caught inside the page, so no real file was saved. The Android back button was not part of this module's checks.
+- **Node:** still not installed, so tests ran on the browser test page, in the laptop's time zone only.
+- **Chart.js line endings:** Git warns that it may rewrite `vendor/chart.umd.min.js` with Windows line endings in the laptop's folder. The committed copy is unchanged, so to re-check it use `git cat-file blob HEAD:vendor/chart.umd.min.js | sha256sum`, which gave the spec's SHA-256 at commit time.
+- **Part 2's visible change, kept:** the Analysis heading reads "Overview: completion %".
+- **Fewer approval stops:** the spec itself set this for Module 5 (Auto mode, stopping at the plan, pushes, phone tests and problems). The section 14 rule is unchanged for other sessions.
 
 ---
 
