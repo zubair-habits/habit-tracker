@@ -783,3 +783,133 @@ button.danger-solid {
   color: var(--danger);
   font-weight: 600;
 }
+
+/* Analysis view (Module 5). */
+
+/* A chart keeps its drawn width, so without these the page could not shrink past it. */
+.app-main > section[data-view="analysis"] {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.range-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.range-buttons[hidden] {
+  display: none;
+}
+
+.range-button {
+  min-height: 48px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.range-button[aria-pressed="true"] {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .range-button[aria-pressed="true"] {
+  color: #121513;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .range-button[aria-pressed="true"] {
+    color: #121513;
+  }
+}
+
+.analysis-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+#analysis-discontinued-list {
+  margin-top: 12px;
+}
+
+.analysis-card {
+  min-width: 0;
+  padding: 0;
+}
+
+.analysis-head {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+
+.analysis-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.analysis-percent {
+  margin-top: 8px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.analysis-line {
+  font-size: 0.875rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.analysis-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  padding: 0 16px 16px;
+}
+
+.analysis-detail[hidden] {
+  display: none;
+}
+
+.detail-chart {
+  min-width: 0;
+}
+
+.detail-title {
+  margin: 0 0 8px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Chart.js sizes itself to this box, so each box needs a fixed height. */
+.chart-box {
+  position: relative;
+  min-width: 0;
+}
+
+.chart-detail {
+  height: 200px;
+}
+
+.chart-note {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}

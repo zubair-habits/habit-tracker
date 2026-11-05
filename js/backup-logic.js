@@ -4,6 +4,7 @@
 import { toDateStr } from './dates.js';
 import { formatClock, formatDeviation } from './calendar-logic.js';
 import { formatDate } from './habit-logic.js';
+import { isScheduled } from './schedule.js';
 
 const DAY_MS = 86400000;
 const OLDEST_SCHEMA = 2; // Backups only exist from schema 2.
@@ -322,7 +323,8 @@ export function buildCsv(habits, completions) {
       c.deviationMin,
       formatDeviation(c.deviationMin),
       yesNo(c.late),
-      yesNo(c.extra),
+      // Agrees with the calendar and Analysis. With no habit to ask, the stored flag is all there is.
+      yesNo(habit ? !isScheduled(habit, c.date) : c.extra),
       habit ? habit.status : '',
       c.habitId,
     ];

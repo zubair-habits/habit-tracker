@@ -8,6 +8,7 @@ import {
   formatBackupTime, lastBackupLine, MIGRATIONS, needsReminder, parseBackup, previewText, restorePlan, serialiseBackup,
   upgradeBackup, validateBackup,
 } from '../js/backup-logic.js';
+import { COMPLETIONS as ANALYSIS_COMPLETIONS, HABITS as ANALYSIS_HABITS } from './analysis-fixture.js';
 
 const NOT_A_BACKUP = "This isn't a Habit Tracker backup.";
 const TOO_NEW = 'This backup was made by a newer version of the app. Update the app first.';
@@ -83,6 +84,12 @@ const addFieldX = (file) => ({ ...file, x: 'added', order: [...(file.order || []
 const addFieldY = (file) => ({ ...file, y: 'added', order: [...(file.order || []), 'y'] });
 
 const csvLines = () => buildCsv(HABITS, COMPLETIONS).replace(BOM, '').split('\r\n');
+
+// The Extra column of one row of the Module 5 fixture's CSV.
+function analysisCsvExtra(date, name) {
+  const lines = buildCsv(ANALYSIS_HABITS, ANALYSIS_COMPLETIONS).replace(BOM, '').split('\r\n');
+  return lines.find((line) => line.startsWith(`${date},${name},`)).split(',')[7];
+}
 
 const cases = [
   // Building
@@ -257,6 +264,9 @@ const cases = [
   ['A late completion has Late = Yes', () => csvLines()[2], '2026-11-03,Read,22:00,2026-11-04 10:30,750,12 h 30 min late,Yes,No,discontinued,read-id'],
   ['The extra has Extra = Yes', () => csvLines()[4], '2026-11-08,Gym,07:00,2026-11-08 09:00,120,2 h late,No,Yes,active,gym-id'],
   ['Deviation (min) -10 has no quote mark', () => csvLines()[3], '2026-11-05,Read,22:00,2026-11-05 21:50,-10,10 min early,No,No,discontinued,read-id'],
+  ['CSV Extra ignores the stored flag: Gym 2026-11-10 is No', () => analysisCsvExtra('2026-11-10', 'Gym'), 'No'],
+  ['CSV Extra ignores the stored flag: Walk 2026-11-16 is Yes', () => analysisCsvExtra('2026-11-16', 'Walk'), 'Yes'],
+  ['CSV Extra with no habit to ask uses the stored flag', () => buildCsv([], [{ ...c4, habitId: 'gone' }]).split('\r\n')[1].split(',')[7], 'Yes'],
 
   // Preview
   ['previewText, exact wording', () => previewText(backup(), { habits: 1, completions: 2 }),

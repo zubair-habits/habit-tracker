@@ -60,7 +60,7 @@ export async function discontinuePreview(habit) {
   return discontinueMessage(countDays(habit, completions, lastDay));
 }
 
-// Scheduled days with a non-extra completion, for "with N days of history".
+// Scheduled days with a completion, for "with N days of history".
 export async function daysOfHistory(habit) {
   return countDays(habit, await completionsOf(habit.id), todayStr()).x;
 }

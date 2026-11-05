@@ -8,6 +8,8 @@ import {
   applyRestart, findByName, mostRecentlyDiscontinued, firstFreeColour, describeSchedule,
   describeHistory,
 } from '../js/habit-logic.js';
+import { buildCompletion } from '../js/calendar-logic.js';
+import { at, COMPLETIONS, gym, read, walk } from './analysis-fixture.js';
 
 const TODAY = '2026-11-10'; // a Tuesday
 const RED = '#e5484d';
@@ -130,13 +132,26 @@ const cases = [
   ['Completed today: 4 of 10', () => countDays(everyDay, someDone, TODAY), { x: 4, y: 10 }],
   ['Message reads 4 days out of 10 days (40%)', () => discontinueMessage({ x: 4, y: 10 }),
     'You have continued with this habit for 4 days out of 10 days (40%). Are you sure you want to remove this habit?'],
-  ['Extra today does not count as completed', () => lastCountedDay(everyDay, [done(TODAY, true)], TODAY), '2026-11-09'],
-  ['Extras are left out of x', () => countDays(everyDay, [done('2026-11-01', true)], '2026-11-09'), { x: 0, y: 9 }],
+  ['Extra today does not count as completed', () => lastCountedDay(mwf, [done(TODAY, true)], TODAY), '2026-11-09'],
+  ['Extras are left out of x', () => countDays(mwf, [done('2026-11-03', true)], '2026-11-09'), { x: 0, y: 4 }],
   ['Another habit\'s completions are ignored', () => countDays(everyDay, [done('2026-11-01', false, 'other')], '2026-11-09'), { x: 0, y: 9 }],
   ['Created today: 0 of 0', () => countDays(createdToday, [], lastCountedDay(createdToday, [], TODAY)), { x: 0, y: 0 }],
   ['Created today: no scheduled days message', () => discontinueMessage({ x: 0, y: 0 }),
     'This habit has had no scheduled days yet. Are you sure you want to remove it?'],
   ['Mon/Wed/Fri counts only 2, 4, 6 and 9 November', () => countDays(mwf, [], '2026-11-09').y, 4],
+
+  // isScheduled decides, never the stored flag (Module 5, decisions 1 and 5)
+  ['Stored extra on a scheduled day still counts: Gym 7 of 9', () => countDays(gym, COMPLETIONS, '2026-11-19'), { x: 7, y: 9 }],
+  ['countDays with firstDay: Gym from 11-10 is 4 of 5', () => countDays(gym, COMPLETIONS, '2026-11-19', '2026-11-10'), { x: 4, y: 5 }],
+  ['countDays with a firstDay before the first active day', () => countDays(gym, COMPLETIONS, '2026-11-19', '2026-01-01'), { x: 7, y: 9 }],
+  ['Read counts 3 of 6', () => countDays(read, COMPLETIONS, '2026-11-07'), { x: 3, y: 6 }],
+  ['Read message reads 3 days out of 6 days (50%)', () => discontinueMessage(countDays(read, COMPLETIONS, '2026-11-07')),
+    'You have continued with this habit for 3 days out of 6 days (50%). Are you sure you want to remove this habit?'],
+  ['Gym pending today: last counted day is yesterday', () => lastCountedDay(gym, COMPLETIONS, '2026-11-20'), '2026-11-19'],
+  ['Gym completed today: last counted day is today', () => lastCountedDay(
+    gym, [...COMPLETIONS, buildCompletion(gym, '2026-11-20', at(2026, 11, 20, 7, 0))], '2026-11-20'), '2026-11-20'],
+  ['Stored non-extra on an unscheduled day: Walk ends yesterday', () => lastCountedDay(walk, COMPLETIONS, '2026-11-16'), '2026-11-15'],
+  ['Discontinue uses the same rule: Walk ends yesterday', () => applyDiscontinue(walk, COMPLETIONS, '2026-11-16').activePeriods[0].end, '2026-11-15'],
   ['Discontinue sets the status', () => stopped.status, 'discontinued'],
   ['Discontinue ends the period yesterday', () => stopped.activePeriods, [{ start: '2026-11-01', end: '2026-11-09' }]],
   ['Discontinue keeps the versions', () => stopped.schedule, everyDay.schedule],

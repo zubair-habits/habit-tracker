@@ -120,26 +120,29 @@ export function applyEdit(habit, input, today) {
   };
 }
 
-function hasNonExtraCompletion(habit, completions, date) {
-  return completions.some((c) => c.habitId === habit.id && c.date === date && !c.extra);
+function hasScheduledCompletion(habit, completions, date) {
+  return isScheduled(habit, date) && completions.some((c) => c.habitId === habit.id && c.date === date);
 }
 
-// The last day a discontinued habit counts: today only if it was completed today,
-// so the day a habit is removed is never counted as missed.
+// The last day that counts: today only if today is scheduled and completed, so a
+// habit still pending today, or removed today, is never counted as missed.
 export function lastCountedDay(habit, completions, today) {
-  return hasNonExtraCompletion(habit, completions, today) ? today : addDays(today, -1);
+  return hasScheduledCompletion(habit, completions, today) ? today : addDays(today, -1);
 }
 
-// y = scheduled days up to lastDay; x = those with a non-extra completion.
-export function countDays(habit, completions, lastDay) {
+// y = scheduled days up to lastDay; x = those with a completion. isScheduled decides
+// which days count, never the stored "extra" flag (CLAUDE.md section 10).
+// firstDay, if given, starts the count later than the first active day.
+export function countDays(habit, completions, lastDay, firstDay = null) {
   let x = 0;
   let y = 0;
   if (habit.activePeriods.length === 0) return { x, y };
 
   const done = new Set(
-    completions.filter((c) => c.habitId === habit.id && !c.extra).map((c) => c.date)
+    completions.filter((c) => c.habitId === habit.id).map((c) => c.date)
   );
-  const first = habit.activePeriods.map((p) => p.start).sort()[0];
+  const earliest = habit.activePeriods.map((p) => p.start).sort()[0];
+  const first = firstDay !== null && firstDay > earliest ? firstDay : earliest;
   for (let date = first; date <= lastDay; date = addDays(date, 1)) {
     if (isScheduled(habit, date)) {
       y += 1;

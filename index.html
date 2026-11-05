@@ -120,10 +120,17 @@
     </section>
 
     <section data-view="analysis" hidden>
-      <div class="card">
-        <h2>Analysis</h2>
-        <p class="placeholder">Coming in Module 5</p>
+      <p id="analysis-empty" class="placeholder" hidden>Add habits from Menu → Habits.</p>
+      <div id="analysis-ranges" class="range-buttons" role="group" aria-label="Time range"></div>
+      <div id="analysis-overview" class="card">
+        <h2>Overview</h2>
+        <div id="analysis-overview-chart"></div>
       </div>
+      <div id="analysis-active" class="analysis-cards"></div>
+      <details id="analysis-discontinued" class="card" hidden>
+        <summary>Discontinued (<span id="analysis-discontinued-count">0</span>)</summary>
+        <div id="analysis-discontinued-list" class="analysis-cards"></div>
+      </details>
     </section>
 
     <section data-view="export" hidden>
