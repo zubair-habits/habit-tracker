@@ -10,7 +10,8 @@ Update the **Status** section at the end of every session.
 
 ## 1. Status
 
-- **Phase:** Module 3 complete (2026-11-05), next is Module 4.
+- **Phase:** Module 4 complete (2026-11-05), next is Module 5.
+- **Real daily use started (2026-11-05).** The test habits may now be discontinued or kept; all data from here on is real.
 - **Done:**
   - GitHub organisation `zubair-habits` created.
   - GitHub email privacy on: "Keep my email addresses private" and "Block command line pushes that expose my email".
@@ -24,10 +25,11 @@ Update the **Status** section at the end of every session.
   - **Module 1 (2026-11-05):** Dexie version 2 (`habits`, `completions`, `settings`; `testCounter` removed by migration), `schemaVersion` row, persistent storage request, `js/dates.js`, `isScheduled` in `js/schedule.js` (25 / 25 test cases pass), top-corner menu with Main, Settings, Analysis and Export views and back-button history, theme (System, Light, Dark), extended About panel. Built in a cloud session; merged through pull requests #1 (0.2.0) and #2 (0.2.1). Phone part 1 passed (counter gone; 0.2.0, schema 2, persistent storage Granted, counts 0 / 0 / 1, then settings 2 after choosing Dark). Phone part 2 passed (0.2.1, Theme still Dark, settings still 2).
   - **Module 2 (2026-11-05):** Habits view in the menu: add, edit, recolour, re-time, reschedule, discontinue (soft delete), restart and same-name "continue or new record", with read-only History. New files `js/habit-logic.js` (77 / 77 test cases pass), `js/habits.js`, `js/habits-view.js`, `js/dialog.js`. No database version change (schema still 2). Phone part 1 passed (on 0.3.1, see notes). Phone part 2 passed (0.3.2, the same 3 habits, Test Gym's two-version History kept, About shows Habits 3).
   - **Module 3 (2026-11-05):** the Main view is now the month calendar with coloured dots (done, extra, due, missed, upcoming) and a day sheet: Completed with deviation, Undo, late flag, extras, future days blocked, one completion per habit per day. New files `js/calendar-logic.js` (70 / 70 test cases pass), `js/completions.js`, `js/calendar-view.js`. No database version change (schema still 2). Laptop checks passed. Phone part 1 passed on 0.4.0 (marking a past day was not possible on the phone, see notes). Phone part 2 passed on 0.4.1 (dots, completion times and About counts unchanged).
-- **Current version:** `0.4.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
+  - **Module 4 (2026-11-05):** backup and restore. **Back up** shares `habit-backup-<date>.txt` (JSON inside), **Download instead** saves `.json`, Restore accepts both and judges by contents, with checks, a preview and one replace transaction. CSV export, 7-day banner, Last backup in Settings and About. New files `js/backup-logic.js` (88 / 88 test cases pass), `js/backup.js`, `js/backup-view.js`. No database version change (schema still 2). Phone part 1 passed on 0.5.0, part 2 on 0.5.1, part 3 passed: after deleting the site data, Restore from Drive brought everything back.
+- **Current version:** `0.5.1`. The only place it is set is `version.js`; both `app.js` and `sw.js` (a module service worker) import it.
 - **Module 0 decisions:** CSP loosened only for Eruda (inline styles, `data:` fonts/images; no `unsafe-eval`); version lives only in `version.js`; updates wait for the banner tap; offline is cache-first; icon is white "12" on black with green theme colour kept; owner runs `git push` and downloads via `!` (Git Bash).
 - **Permanent app address:** `https://zubair-habits.github.io/habit-tracker/`
-- **Next:** Module 4 (backup and restore). Its spec `docs/modules/module-4.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 4`.
+- **Next:** Module 5 (analysis). Its spec `docs/modules/module-5.md` does not exist yet; write it in the claude.ai planning chat first, add it to the repository, then start with `/build-module 5`.
 
 ### Notes from Module 0
 - **CSP:** `style-src 'unsafe-inline'`, `img-src data:` and `font-src data:` are allowed only because Eruda needs them. `unsafe-eval` is refused, so Eruda shows logs and errors but cannot run typed commands. `connect-src 'self'` is unchanged.
@@ -68,6 +70,19 @@ Update the **Status** section at the end of every session.
 - **For Module 5 (dot and flag can disagree):** dots and sheet sections use `isScheduled`, as the spec says, but percentages use the stored `extra` flag. If an extra is marked and the habit is edited the same day so that day becomes scheduled, the dot fills as a normal completion while the row stays `extra: true`. The reverse also happens: a scheduled completion followed by an edit the same day shows as a diamond with `extra: false`. Decide which one Analysis trusts.
 - **Testing:** a plain Python web server lets the browser keep old copies of files (0.3.2 ran instead of the new code at first). A throwaway server sending `Cache-Control: no-store`, plus a `cache: 'reload'` fetch of each file once, cured it. Both the server script and `.claude/launch.json` were temporary and are gone.
 - **`/build-module` instructions:** they still say Claude cannot push, which is out of date with the section 14 rule. Not changed.
+
+### Notes from Module 4
+- **Permission rules file:** the owner's `settings.json` was first found at `.claude/skills/settings.json`, where its rules did nothing. With the owner's approval Claude moved it, unchanged, to `.claude/settings.json`. The rules took effect without a restart: a `curl` command was denied straight away.
+- **Gap in the rules, not changed:** they name only `Bash(...)` commands, so they probably do not cover Claude's PowerShell tool. Claude used Bash for git and deletions. Consider adding PowerShell rules from the planning chat.
+- **Added beyond the spec (owner approved):** every new backup gets the same checks Restore uses. If they fail, the file still saves, the status line warns, and `lastBackupAt` is not updated. A share failure other than closing the sheet falls back to download. Neither path was triggered in testing: the first needs a bad row, the second cannot happen on the laptop.
+- **Also added:** `formatBackupTime`, `lastBackupLine` and `bannerText` in `js/backup-logic.js`, and extra test cases beyond the spec's list. `CLAUDE.md` section 8 now names `habit-backup-*`.
+- **Choices the spec left open:** the backup age reads "today" or "1 day ago". The Restore preview counts the rows in the file, not its `counts` field. Restore ignores a leading byte-order mark. No valid `schemaVersion` reads "This isn't a Habit Tracker backup."; no `data` section reads "This backup is damaged: …". An unreadable file shows "That file couldn't be read." A cancelled CSV share shows "CSV not saved."
+- **"Backup shared" limit:** Android reports success when a target such as Drive is picked, not when it finishes saving. Cancelling in Drive's save screen still records a backup. Check the file in Drive now and then.
+- **Clearing site data:** this probably removes the app's offline copy too, so the phone was kept online for part 3.
+- **Laptop checks that changed:** the built-in browser refused to start a service worker (`register` failed fetching `sw.js`, though the page could fetch it), so the offline check moved to the phone, in airplane mode, and passed in part 1. Downloads were caught inside the page to check their contents, so no real file was saved on the laptop; the phone covered real saving. The forced restore failure replaced `bulkAdd` from the test script, so no temporary code was needed. An old service worker on `localhost:8765` from an earlier module broke that address, so the checks ran on `127.0.0.1:8765`.
+- **Node:** still not installed, so tests ran on the browser test page, on Indian time only.
+- **Part 2's visible change, kept:** the Export view's CSV heading reads "CSV for Excel".
+- **Not recorded:** the owner reported all three phone tests as passed, and "All came back" for part 3, but the Habits and Completions numbers were not given.
 
 ---
 
