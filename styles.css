@@ -613,6 +613,7 @@ button.danger-solid {
 }
 
 .cal-today .cal-number {
+  color: var(--brand);
   font-weight: 700;
 }
 
